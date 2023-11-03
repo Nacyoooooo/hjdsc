@@ -1,0 +1,13 @@
+server:
+  port: 8089
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/hjdsc?characterEncoding=utf-8&serverTimeZone=UTC
+    username: root
+    password: 1287049865
