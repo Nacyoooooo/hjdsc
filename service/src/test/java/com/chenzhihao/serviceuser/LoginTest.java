@@ -25,8 +25,10 @@ public class LoginTest {
         RegisterDto registerDto = new RegisterDto();
         registerDto.setName("TestRegister");
         registerDto.setPassword("123456");
+        registerDto.setEmail("939832920@qq.com");
+        registerDto.setGender(1);
+        registerDto.setPhoneNumber("159");
         System.out.println(usersService.register(registerDto));
     }
-
 
 }
