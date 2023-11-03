@@ -7,7 +7,7 @@
         <groupId>com.chenzhihao</groupId>
         <artifactId>hjdsc</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-        <relativePath/> <!-- lookup parent from repository -->
+<!--        <relativePath/> &lt;!&ndash; lookup parent from repository &ndash;&gt;-->
     </parent>
 
     <groupId>com.chenzhihao</groupId>
@@ -16,11 +16,7 @@
     <name>service</name>
     <description>service</description>
 
-    <modules>
-        <module>service-user</module>
-    </modules>
 
-    <packaging>pom</packaging>
 
     <dependencies>
         <dependency>
@@ -38,6 +34,7 @@
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.chenzhihao</groupId>
@@ -55,6 +52,7 @@
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
+    <build>
 
-
+    </build>
 </project>

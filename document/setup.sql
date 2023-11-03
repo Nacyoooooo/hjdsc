@@ -10,12 +10,12 @@ USE `hjdsc`;
 DROP TABLE IF EXISTS `users`;
 
 CREATE TABLE `users` (
-                         `id` int  COMMENT '主键，统一账号',
+                         `id` int auto_increment COMMENT  '主键，统一账号',
                          `name` varchar(20) COMMENT '姓名',
                          `password` varchar(100) COMMENT '密码',
                          `phoneNumber` varchar(20) COMMENT '手机号',
                          `email` varchar(20) COMMENT '邮箱',
-                         `url` varchar(50) comment '头像的url地址',
+                         `url` varchar(100) comment '头像的url地址',
                          `gender` INT comment '性别 1是男 2是女',
                          `status` INT comment '账号状态 1是正常 2是异常',
                          `createTime` DATETIME comment '账号创建时间',

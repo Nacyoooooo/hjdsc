@@ -1,9 +1,11 @@
 package com.chenzhihao.model;
 
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Builder;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -17,7 +19,7 @@ public class Users implements Serializable {
     /**
      * 主键，统一账号
      */
-    @TableId
+    @TableId(type = IdType.AUTO)
     private Long id;
 
     /**

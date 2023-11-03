@@ -1,14 +1,13 @@
 package com.chenzhihao.serviceuser;
 
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ServiceUserApplication {
+public class MainActivity {
 
     public static void main(String[] args) {
-        SpringApplication.run(ServiceUserApplication.class, args);
+        SpringApplication.run(MainActivity.class, args);
     }
 
 }

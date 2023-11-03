@@ -1,0 +1,16 @@
+server:
+  port: 8089
+
+
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/hjdsc?userSSL=false&serverTimeZone=UTC
+    username: root
+    password: 1287049865
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath:mapper/*.xml
