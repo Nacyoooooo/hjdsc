@@ -6,6 +6,9 @@ import lombok.Getter;
 public enum ResultCodeEnum {
     SUCCESS(200,"成功"),
     FAIL(201, "失败"),
+    DAT_ERROR(202,"传输数据异常"),
+    PASSWORD_ERROR(203,"密码错误"),
+    USER_UNEXIST(400,"用户不存在"),
     NETWORK_ERROR(500,"服务器异常");
     private Integer code;
 
