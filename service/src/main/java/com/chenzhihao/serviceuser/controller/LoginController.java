@@ -18,7 +18,7 @@ public class LoginController {
     private UsersService usersService;
     @PostMapping
     @ResponseBody
-    public Result<?> login(LoginDto user){
+    public Result<?> login(@RequestBody LoginDto user){
         return usersService.Login(user);
     }
     @PostMapping("register")
