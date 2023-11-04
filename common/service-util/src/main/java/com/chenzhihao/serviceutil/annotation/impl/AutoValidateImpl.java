@@ -1,17 +1,15 @@
 package com.chenzhihao.serviceutil.annotation.impl;
 
 
+import com.chenzhihao.serviceutil.constant.FieldType;
 import com.chenzhihao.serviceutil.annotation.AutoValidate;
 
-import com.chenzhihao.serviceutil.constant.FieldType;
 import com.chenzhihao.serviceutil.result.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
-import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 
 
@@ -31,7 +29,7 @@ public class AutoValidateImpl{
     @Around("pointcut()")
     public Object before(ProceedingJoinPoint j) throws Throwable {
         //控制台显示切入情况
-        log.info("切入成功");
+        log.info("AutoValidate切入成功");
         //获取其参数列表
         Object[] args =  j.getArgs();
         //循环遍历其参数列表

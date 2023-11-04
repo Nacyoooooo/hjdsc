@@ -5,9 +5,16 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.chenzhihao.serviceutil.annotation.AutoFill;
+import com.chenzhihao.serviceutil.constant.FillPeriod;
 
 import java.io.Serializable;
 import java.util.Date;
+
+import static com.chenzhihao.serviceutil.constant.FillPeriod.SAVE;
+import static com.chenzhihao.serviceutil.constant.FillPeriod.UPDATE;
+import static com.chenzhihao.serviceutil.constant.FillType.ENCRYPT;
+import static com.chenzhihao.serviceutil.constant.FillType.TIME;
 
 /**
  * 
@@ -29,6 +36,7 @@ public class Users implements Serializable {
     /**
      * 密码
      */
+    @AutoFill(type = ENCRYPT)
     private String password;
 
     /**
@@ -59,11 +67,13 @@ public class Users implements Serializable {
     /**
      * 账号创建时间
      */
+    @AutoFill(type = TIME,period = SAVE)
     private Date createtime;
 
     /**
      * 账号更新时间
      */
+    @AutoFill(type = TIME,period = UPDATE)
     private Date updatetime;
 
     @TableField(exist = false)

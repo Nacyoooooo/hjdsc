@@ -1,7 +1,7 @@
 package com.chenzhihao.serviceutil.Exception;
 
-import com.chenzhihao.serviceutil.result.Result;
 import com.chenzhihao.serviceutil.result.ResultCodeEnum;
+import com.chenzhihao.serviceutil.result.Result;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;

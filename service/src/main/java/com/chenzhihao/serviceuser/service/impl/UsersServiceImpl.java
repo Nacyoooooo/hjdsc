@@ -7,20 +7,20 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.chenzhihao.commonutil.JwtHelper;
 import com.chenzhihao.commonutil.MD5;
+import com.chenzhihao.serviceutil.annotation.AutoFill;
 import com.chenzhihao.serviceutil.dto.LoginDto;
 import com.chenzhihao.serviceutil.dto.RegisterDto;
 import com.chenzhihao.serviceutil.model.Users;
 import com.chenzhihao.serviceutil.annotation.AutoValidate;
 import com.chenzhihao.serviceuser.mapper.UsersMapper;
 import com.chenzhihao.serviceuser.service.UsersService;
-import com.chenzhihao.serviceutil.constant.UserCode;
 import com.chenzhihao.serviceutil.result.Result;
 import com.chenzhihao.serviceutil.result.ResultCodeEnum;
+import com.chenzhihao.serviceutil.util.UserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -40,14 +40,12 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users>
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
-
+    @Autowired
+    private UserUtil util;
+    @AutoValidate
     @Override
     public Result  Login(LoginDto user) {
         //检查user的参数是否合法
-        // 如果非法，返回异常
-        if (user.getId()==null||user.getPassword()==null){
-            return Result.fail();
-        }
         //如果合法，开始校验
         //根据id查找用户
         QueryWrapper q=new QueryWrapper();
@@ -98,20 +96,12 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users>
         if(null!=one){
             return Result.fail(ResultCodeEnum.USER_EXIST);
         }
-
         //如果符合要求，则开始创建角色，并初始化
-        Users users = new Users();
-        users.setName(user.getName());
-        users.setEmail(user.getEmail());
-        users.setPassword(MD5.encrypt(user.getPassword()));
-        users.setPhonenumber(user.getPhoneNumber());
-        users.setStatus(UserCode.NORMAL);
-        users.setCreatetime(new Date());
+        Users users = util.createUser(user);
         boolean save = save(users);
         if(save){
             return Result.ok();
         }
-
         //创建之后查询并确认其是否注册成功
         return Result.fail();
     }

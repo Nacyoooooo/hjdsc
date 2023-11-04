@@ -1,7 +1,7 @@
 package com.chenzhihao.serviceutil.dto;
 
+import com.chenzhihao.serviceutil.annotation.AutoValidate;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +12,8 @@ import java.io.Serializable;
 @NoArgsConstructor
 //登录专用dto
 public class LoginDto implements Serializable {
+    @AutoValidate
     private Integer id;
+    @AutoValidate
     private String password;
 }
