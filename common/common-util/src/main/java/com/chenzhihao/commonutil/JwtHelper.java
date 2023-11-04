@@ -11,14 +11,13 @@ public class JwtHelper {
     private static String tokenSignKey = "hjdsc";
 
     //根据userId+userName生成token字符串
-    public static String createToken(Long userId, String userName) {
+    public static String createToken(Long userId) throws JwtException{
         String token = Jwts.builder()
                 .setSubject("hjdsc-USER")
 
                 .setExpiration(new Date(System.currentTimeMillis() + tokenExpiration))
 
                 .claim("userId", userId)
-                .claim("userName", userName)
 
                 .signWith(SignatureAlgorithm.HS512, tokenSignKey)
 
@@ -27,19 +26,24 @@ public class JwtHelper {
         return token;
     }
 
-    public static Long getUserId(String token) {
+    public static Long getUserId(String token) throws JwtException{
         if(StringUtils.isEmpty(token)) return null;
 
-        Jws<Claims> claimsJws = Jwts.parser().setSigningKey(tokenSignKey).parseClaimsJws(token);
+        Jws<Claims> claimsJws = null;
+        try {
+            claimsJws=Jwts.parser().setSigningKey(tokenSignKey).parseClaimsJws(token);
+        }catch (JwtException e){
+
+            e.printStackTrace();
+        }
         Claims claims = claimsJws.getBody();
         Integer userId = (Integer)claims.get("userId");
         return userId.longValue();
         // return 1L;
     }
 
-    public static String getUserName(String token) {
+    public static String getUserName(String token) throws JwtException{
         if(StringUtils.isEmpty(token)) return "";
-
         Jws<Claims> claimsJws = Jwts.parser().setSigningKey(tokenSignKey).parseClaimsJws(token);
         Claims claims = claimsJws.getBody();
         return (String)claims.get("userName");
@@ -50,7 +54,7 @@ public class JwtHelper {
     }
 
     public static void main(String[] args) {
-        String token = JwtHelper.createToken(1L, "admin");
+        String token = JwtHelper.createToken(1L);
         System.out.println(token);
 
         System.out.println(JwtHelper.getUserId(token));

@@ -1,4 +1,4 @@
-package com.chenzhihao.dto;
+package com.chenzhihao.serviceutil.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

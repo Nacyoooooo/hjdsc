@@ -10,7 +10,8 @@ public enum ResultCodeEnum {
     PASSWORD_ERROR(203,"密码错误"),
     USER_UNEXIST(400,"用户不存在"),
     USER_EXIST(401,"用户已存在"),
-    NETWORK_ERROR(500,"服务器异常");
+    NETWORK_ERROR(500,"服务器异常"),
+    AUTH_ERROR(501,"登录信息异常");
     private Integer code;
 
     private String message;

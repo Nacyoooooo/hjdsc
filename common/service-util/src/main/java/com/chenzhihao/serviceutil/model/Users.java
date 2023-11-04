@@ -1,4 +1,4 @@
-package com.chenzhihao.model;
+package com.chenzhihao.serviceutil.model;
 
 
 import com.baomidou.mybatisplus.annotation.IdType;

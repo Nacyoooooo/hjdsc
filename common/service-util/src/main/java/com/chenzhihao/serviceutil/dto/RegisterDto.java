@@ -1,4 +1,4 @@
-package com.chenzhihao.dto;
+package com.chenzhihao.serviceutil.dto;
 import com.chenzhihao.serviceutil.annotation.AutoValidate;
 import com.chenzhihao.serviceutil.constant.FieldType;
 import lombok.AllArgsConstructor;
