@@ -12,6 +12,10 @@ const routes = [
   {
     path: '/home',
     component:()=>import('../views/home.vue')
+  },
+  {
+    path: '/userdata',
+    component:()=>import('../views/userdata.vue')
   }
 ]
 
@@ -19,5 +23,7 @@ const router = createRouter({
   history: createWebHashHistory(),
   routes
 })
-
+router.beforeEach((to,from,next)=>{
+next()
+})
 export default router

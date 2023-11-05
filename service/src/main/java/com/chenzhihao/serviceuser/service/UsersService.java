@@ -4,6 +4,7 @@ package com.chenzhihao.serviceuser.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.chenzhihao.serviceutil.dto.LoginDto;
 import com.chenzhihao.serviceutil.dto.RegisterDto;
+import com.chenzhihao.serviceutil.dto.UserDataDto;
 import com.chenzhihao.serviceutil.model.Users;
 import com.chenzhihao.serviceutil.result.Result;
 import org.springframework.stereotype.Service;
@@ -20,4 +21,12 @@ public interface UsersService extends IService<Users> {
 public Result Login(LoginDto user);
 public Result register(RegisterDto user);
 public Result forgetPassword();
+
+    public Result<?> sign();
+
+    Result<?> signCount();
+
+    Result<?> getInfo();
+
+    Result<?> updateInfo(UserDataDto users);
 }
