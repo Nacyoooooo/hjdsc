@@ -17,6 +17,7 @@ import com.chenzhihao.serviceuser.service.UsersService;
 import com.chenzhihao.serviceutil.result.Result;
 import com.chenzhihao.serviceutil.result.ResultCodeEnum;
 import com.chenzhihao.serviceutil.util.UserUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
@@ -35,6 +36,7 @@ import static com.chenzhihao.serviceutil.constant.RedisConstants.LOGIN_USER_TTL;
  * @createDate 2023-11-02 22:42:59
  */
 @Component
+@Slf4j
 public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users>
         implements UsersService {
 
@@ -60,6 +62,7 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users>
         if(MD5.encrypt(user.getPassword()).equals(one.getPassword())){
             //创建token
             String token = JwtHelper.createToken(one.getId());
+            log.info(token);
             //将该对象的基本信息拆分成map集合，方便后续存入redis
             Map<String, Object> stringObjectMap = BeanUtil.beanToMap(one, new HashMap<>(),
                     CopyOptions.create()
@@ -84,6 +87,7 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users>
         //密码校验失败，则返回错误信息
         return Result.fail(ResultCodeEnum.PASSWORD_ERROR);
     }
+
     @AutoValidate
     @Override
     public Result register(RegisterDto user) {

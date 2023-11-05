@@ -28,18 +28,11 @@ public class JwtHelper {
 
     public static Long getUserId(String token) throws JwtException{
         if(StringUtils.isEmpty(token)) return null;
+        Jws<Claims> claimsJws = Jwts.parser().setSigningKey(tokenSignKey).parseClaimsJws(token);
 
-        Jws<Claims> claimsJws = null;
-        try {
-            claimsJws=Jwts.parser().setSigningKey(tokenSignKey).parseClaimsJws(token);
-        }catch (JwtException e){
-
-            e.printStackTrace();
-        }
         Claims claims = claimsJws.getBody();
         Integer userId = (Integer)claims.get("userId");
         return userId.longValue();
-        // return 1L;
     }
 
     public static String getUserName(String token) throws JwtException{

@@ -23,7 +23,7 @@ public class LoginController {
     }
     @PostMapping("register")
     @ResponseBody
-    public Result<?> register(RegisterDto user){
+    public Result<?> register(@RequestBody RegisterDto user){
         return usersService.register(user);
     }
     @PostMapping("/test")
