@@ -1,5 +1,6 @@
 package com.chenzhihao.serviceuser.controller;
 
+import com.chenzhihao.serviceuser.service.SignsService;
 import com.chenzhihao.serviceuser.service.UsersService;
 import com.chenzhihao.serviceutil.dto.LoginDto;
 import com.chenzhihao.serviceutil.dto.UserDataDto;
@@ -20,15 +21,17 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     @Autowired
     private UsersService usersService;
+    @Autowired
+    private SignsService signsService;
     @PostMapping("/sign")
     @ResponseBody
     public Result<?> sign(){
-        return usersService.sign();
+        return signsService.sign();
     }
     @PostMapping("/signCount")
     @ResponseBody
     public Result<?> signCount(){
-        return usersService.signCount();
+        return signsService.signCount();
     }
     @PostMapping("/getInfo")
     @ResponseBody

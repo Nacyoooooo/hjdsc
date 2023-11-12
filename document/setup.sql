@@ -32,3 +32,54 @@ values (2,'青缨','e10adc3949ba59abbe56e057f20f883e','12345678910','939832920@q
 insert into users (id, name, password, phoneNumber, email, url, gender, status, createTime, updateTime)
 values (3,'云原','e10adc3949ba59abbe56e057f20f883e','12345678910','939832920@qq.com',
         'logo.png',1,1,'2023-10-18 09:00:00','2023-10-18 09:00:00');
+
+-- ----------------------------
+-- Table structure for pets
+-- 宠物信息配置表
+-- ----------------------------
+DROP TABLE IF EXISTS `petsConfig`;
+
+CREATE TABLE `petsConfig` (
+                         `id` int auto_increment COMMENT  '主键,宠物的编号',
+                         `name` varchar(20) COMMENT '宠物的名字',
+                         `description` varchar(100) COMMENT '宠物的描述',
+                         `healthPoint` DECIMAL COMMENT '血量',
+                         `physicalDamagePoint` DECIMAL COMMENT '物理攻击力',
+                         `magicalDamagePoin` DECIMAL comment '法术攻击力',
+                         `physicalDefence` DECIMAL comment '物理防御力',
+                         `magicalDefence` DECIMAL comment '法术防御力',
+                         `speed` DECIMAL comment '速度',
+                         `attribute` INT comment '主属性（不能没有）',
+                         `secondaryAttribute` INT comment '副属性（可以没有）',
+                         `createTime` DATETIME comment '宠物创建时间',
+                         `updateTime` DATETIME comment '宠物更新时间',
+                         PRIMARY KEY (`id`)USING BTREE
+);
+
+insert into petsConfig (name, description, healthPoint, physicalDamagePoint, magicalDamagePoin,
+                        physicalDefence, magicalDefence, speed, attribute, secondaryAttribute, createTime, updateTime)
+VALUES ('喵喵','是一只猫',82,82,83,80,100,100,1,0,'2023-10-18 09:00:00','2023-10-18 09:00:00');
+insert into petsConfig (name, description, healthPoint, physicalDamagePoint, magicalDamagePoin,
+                        physicalDefence, magicalDefence, speed, attribute, secondaryAttribute, createTime, updateTime)
+VALUES ('火花','火元素生物',82,82,83,80,100,100,2,0,'2023-10-18 09:00:00','2023-10-18 09:00:00');
+insert into petsConfig (name, description, healthPoint, physicalDamagePoint, magicalDamagePoin,
+                        physicalDefence, magicalDefence, speed, attribute, secondaryAttribute, createTime, updateTime)
+VALUES ('水蓝蓝','水元素生物',82,82,83,80,100,100,3,0,'2023-10-18 09:00:00','2023-10-18 09:00:00');
+-- ----------------------------
+-- Table structure for signs
+-- 用户签到信息记录表
+-- ----------------------------
+DROP TABLE IF EXISTS `signs`;
+
+CREATE TABLE `signs` (
+                              `id` int auto_increment COMMENT  '主键,宠物的编号',
+                              `uid` int COMMENT '用户id',
+                              `signYear` int COMMENT '签到的年份',
+                              `signMonth`  int COMMENT '签到的月份',
+                              `signData` long COMMENT '签到的数据，转化为十进制后',
+                              `createTime` DATETIME comment '签到数据创建时间',
+                              `updateTime` DATETIME comment '签到数据更新时间',
+                              PRIMARY KEY (`id`)USING BTREE
+);
+insert into signs (uid, signYear, signMonth, signData, createTime, updateTime) VALUES
+(1,2023,11,3524,'2023-10-18 09:00:00','2023-10-18 09:00:00');

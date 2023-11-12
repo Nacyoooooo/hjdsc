@@ -39,7 +39,7 @@ public class RefreshTokenInterceptor implements HandlerInterceptor {
         log.info("key="+key);
         //从redis中找用户，如果没有，则放行，让它去登录
         Map<Object, Object> entries = stringRedisTemplate.opsForHash().entries(key);
-        if(entries.isEmpty()){
+        if(entries==null||entries.isEmpty()){
             return true;
         }
         //将查询到的用户转化为Users对象
