@@ -137,6 +137,54 @@ public class PetstoreServiceImpl extends ServiceImpl<PetstoreMapper, Petstore>
         }
 
     }
+
+    @Override
+    public Result<?> setBagFirst(Long currentPet) {
+        if(null==currentPet||currentPet<=0||currentPet>6){
+            return Result.fail("参数异常");
+        }
+        Users user = UserHolder.getUser();
+        if(user==null){
+            return Result.fail();
+        }
+        Long uid = user.getId();
+        String key="pets:bag:"+uid;
+        Boolean existKey = stringRedisTemplate.hasKey(key);
+        //如果存在,则直接更改顺序
+        if(existKey){
+            String current = stringRedisTemplate.opsForList().index(key, currentPet-1);
+            stringRedisTemplate.opsForList().remove(key,0,current);
+            stringRedisTemplate.opsForList().leftPush(key,current);
+            List<String> list = stringRedisTemplate.opsForList().range(key, 0, -1);
+            if(null==list||list.size()<=0||list.size()>6){
+                return Result.fail();
+            }
+            return Result.ok(list);
+        }
+        //如果不存在，则直接查询数据库
+        else {
+            QueryWrapper<Petstore> q = new QueryWrapper<Petstore>()
+                    .eq("uid", uid)
+                    .ne("performed", 0);
+            List<Petstore> pets = list(q);
+            pets.forEach(pet->{
+                if (pet.getPerformed().equals(currentPet)){
+                    pet.setPerformed(1);
+                } else if (pet.getPerformed().equals(0)) {
+                    pet.setPerformed(currentPet.intValue());
+                }
+            });
+            boolean b = saveOrUpdateBatch(pets);
+            if(!b){
+                return Result.fail("修改失败");
+            }
+            Boolean delete = stringRedisTemplate.delete(key);
+            pets.forEach(petstore -> {
+                stringRedisTemplate.opsForList().rightPush(key,JSONUtil.toJsonStr(petstore));
+            });
+            return Result.ok(pets);
+        }
+    }
 }
 
 

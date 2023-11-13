@@ -63,6 +63,15 @@ public class Users implements Serializable {
      * 账号状态 1是正常 2是异常
      */
     private Integer status;
+    private Integer authority;
+
+    public Integer getAuthority() {
+        return authority;
+    }
+
+    public void setAuthority(Integer authority) {
+        this.authority = authority;
+    }
 
     /**
      * 账号创建时间

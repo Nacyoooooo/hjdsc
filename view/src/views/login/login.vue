@@ -7,7 +7,8 @@ import {useUserInfoStore} from "@/store/store";
 const store=useUserInfoStore()
 const loginForm=reactive( {
   id: '',
-  password: ''
+  password: '',
+  authority:'1'
 })
 const loading=ref(false)
 const login=async ()=>{
@@ -68,7 +69,12 @@ const login=async ()=>{
         <span style="margin-right:20px;">id: 1</span>
         <span> password: 123456</span>
       </div>
-
+      <div class="mb-2 flex items-center text-sm">
+        <el-radio-group v-model="loginForm.authority" class="ml-4">
+          <el-radio label="1" size="large">管理员</el-radio>
+          <el-radio label="2" size="large">玩家</el-radio>
+        </el-radio-group>
+      </div>
     </el-form>
   </div>
 </template>

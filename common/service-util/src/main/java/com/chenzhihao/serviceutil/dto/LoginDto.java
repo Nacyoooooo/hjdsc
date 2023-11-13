@@ -16,4 +16,6 @@ public class LoginDto implements Serializable {
     private Integer id;
     @AutoValidate
     private String password;
+    @AutoValidate
+    private Integer authority;
 }

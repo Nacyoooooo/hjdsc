@@ -63,4 +63,14 @@ public class PetsController {
     public Result<?> getStore(@PathVariable Long currentPage){
         return petstoreService.getStore(currentPage);
     }
+    /**
+     * 设置自己背包中的宠物的出栈顺序
+     * @param
+     * @return
+     */
+    @PostMapping("/setBags/{currentPet}")
+    @ResponseBody
+    public Result<?> setBagFirst(@PathVariable Long currentPet){
+        return petstoreService.setBagFirst(currentPet);
+    }
 }

@@ -11,14 +11,14 @@ public class JwtHelper {
     private static String tokenSignKey = "hjdsc";
 
     //根据userId+userName生成token字符串
-    public static String createToken(Long userId) throws JwtException{
+    public static String createToken(Long userId,Long authority) throws JwtException{
         String token = Jwts.builder()
                 .setSubject("hjdsc-USER")
 
                 .setExpiration(new Date(System.currentTimeMillis() + tokenExpiration))
 
                 .claim("userId", userId)
-
+                .claim("authority", authority)
                 .signWith(SignatureAlgorithm.HS512, tokenSignKey)
 
                 .compressWith(CompressionCodecs.GZIP)
@@ -34,6 +34,14 @@ public class JwtHelper {
         Integer userId = (Integer)claims.get("userId");
         return userId.longValue();
     }
+    public static Long getUserAuthority(String token) throws JwtException{
+        if(StringUtils.isEmpty(token)) return null;
+        Jws<Claims> claimsJws = Jwts.parser().setSigningKey(tokenSignKey).parseClaimsJws(token);
+
+        Claims claims = claimsJws.getBody();
+        Integer authority = (Integer)claims.get("authority");
+        return authority.longValue();
+    }
 
     public static String getUserName(String token) throws JwtException{
         if(StringUtils.isEmpty(token)) return "";
@@ -46,11 +54,5 @@ public class JwtHelper {
         //jwttoken无需删除，客户端扔掉即可。
     }
 
-    public static void main(String[] args) {
-        String token = JwtHelper.createToken(1L);
-        System.out.println(token);
 
-        System.out.println(JwtHelper.getUserId(token));
-        System.out.println(JwtHelper.getUserName(token));
-    }
 }

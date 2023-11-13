@@ -36,8 +36,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import static com.chenzhihao.serviceutil.constant.RedisConstants.LOGIN_USER_KEY;
-import static com.chenzhihao.serviceutil.constant.RedisConstants.LOGIN_USER_TTL;
+import static com.chenzhihao.serviceutil.constant.RedisConstants.*;
 
 
 /**
@@ -72,7 +71,7 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users>
         // 密码校验成功，则返回登录成功信息和token
         if(MD5.encrypt(user.getPassword()).equals(one.getPassword())){
             //创建token
-            String token = JwtHelper.createToken(one.getId());
+            String token = JwtHelper.createToken(one.getId(),one.getAuthority().longValue());
             log.info(token);
             //将该对象的基本信息拆分成map集合，方便后续存入redis
             Map<String, Object> stringObjectMap = BeanUtil.beanToMap(one, new HashMap<>(),
@@ -86,8 +85,17 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users>
                                         return fieldValue.toString() ;
                                     }
                             ));
+            //如果是管理员
+            String tokenkey;
+            if(user.getAuthority().equals(1)){
+                tokenkey=LOGIN_ADMIN_KEY+one.getId();
+            }
+            //如果是用户
+            else {
+                tokenkey=LOGIN_USER_KEY+one.getId();
+            }
             //创建redis查询时使用的key
-            String tokenkey=LOGIN_USER_KEY+one.getId();
+
             //存入hash结构
             stringRedisTemplate.opsForHash().putAll(tokenkey,stringObjectMap);
             //刷新token的时间

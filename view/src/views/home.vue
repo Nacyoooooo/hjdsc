@@ -6,6 +6,7 @@ import {ref} from "vue";
 const store=useUserInfoStore()
 const petId=ref(0)
 const storePage=ref(1)
+const orderid=ref(1)
 const testToken=()=>{
   axios.post('/api/test/testToken',
       {},
@@ -52,8 +53,16 @@ const getPetBag=async ()=>{
   })
 }
 const currentChange=async ()=>{
-  console.log(storePage.value)
   await  axios.post('/api/pets/getStore/'+storePage.value,{},{
+    headers:{
+      "authorization":store.getToken()
+    }
+  }).then(res=>{
+    console.log(res)
+  })
+}
+const setorderid=async ()=>{
+  await  axios.post('/api/pets/setBags/'+orderid.value,{},{
     headers:{
       "authorization":store.getToken()
     }
@@ -79,6 +88,8 @@ const currentChange=async ()=>{
       @current-change="currentChange"
       :total="40"
   />
+  <el-input v-model="orderid"></el-input>
+  <el-button @click="setorderid">更换宠物背包位次</el-button>
 </template>
 
 <style scoped>

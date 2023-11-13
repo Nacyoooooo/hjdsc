@@ -68,6 +68,15 @@ public class Petstore implements Serializable {
      * 宠物更新时间
      */
     private Date updatetime;
+    private Integer performed;
+
+    public Integer getPerformed() {
+        return performed;
+    }
+
+    public void setPerformed(Integer performed) {
+        this.performed = performed;
+    }
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

@@ -15,4 +15,6 @@ public interface PetstoreService extends IService<Petstore> {
     Result<?> getBags();
 
     Result<?> getStore(Long currentPage);
+
+    Result<?> setBagFirst(Long currentPet);
 }

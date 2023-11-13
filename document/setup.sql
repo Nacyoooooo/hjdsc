@@ -6,6 +6,7 @@ USE `hjdsc`;
 
 -- ----------------------------
 -- Table structure for users
+-- 用户表
 -- ----------------------------
 DROP TABLE IF EXISTS `users`;
 
@@ -20,19 +21,19 @@ CREATE TABLE `users` (
                          `status` INT comment '账号状态 1是正常 2是异常',
                          `createTime` DATETIME comment '账号创建时间',
                          `updateTime` DATETIME comment '账号更新时间',
+                         `authority` INT comment '权限等级',
                          PRIMARY KEY (`id`) USING BTREE
 );
 -- 密码是123456
-insert into users (id, name, password, phoneNumber, email, url, gender, status, createTime, updateTime)
+insert into users (id, name, password, phoneNumber, email, url, gender, status, createTime, updateTime,authority)
 values (1,'云举瑶鹿','e10adc3949ba59abbe56e057f20f883e','12345678910','939832920@qq.com',
-        'logo.png',1,1,'2023-10-18 09:00:00','2023-10-18 09:00:00');
-insert into users (id, name, password, phoneNumber, email, url, gender, status, createTime, updateTime)
+        'logo.png',1,1,'2023-10-18 09:00:00','2023-10-18 09:00:00',1);
+insert into users (id, name, password, phoneNumber, email, url, gender, status, createTime, updateTime,authority)
 values (2,'青缨','e10adc3949ba59abbe56e057f20f883e','12345678910','939832920@qq.com',
-        'logo.png',2,2,'2023-10-18 09:00:00','2023-10-18 09:00:00');
-insert into users (id, name, password, phoneNumber, email, url, gender, status, createTime, updateTime)
+        'logo.png',2,2,'2023-10-18 09:00:00','2023-10-18 09:00:00',1);
+insert into users (id, name, password, phoneNumber, email, url, gender, status, createTime, updateTime,authority)
 values (3,'云原','e10adc3949ba59abbe56e057f20f883e','12345678910','939832920@qq.com',
-        'logo.png',1,1,'2023-10-18 09:00:00','2023-10-18 09:00:00');
-
+        'logo.png',1,1,'2023-10-18 09:00:00','2023-10-18 09:00:00',1);
 -- ----------------------------
 -- Table structure for pets
 -- 宠物信息配置表
