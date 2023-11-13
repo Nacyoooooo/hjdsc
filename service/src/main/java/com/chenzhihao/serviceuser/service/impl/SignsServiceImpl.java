@@ -184,7 +184,6 @@ public class SignsServiceImpl extends ServiceImpl<SignsMapper, Signs>
         if(null==num||num==0){
             return Result.ok(0);
         }
-        //TODO 计算当前连续签到天数(从今天算起还是明天算起）
         int count=0;
         //计算本月最大连续签到天数
         int max=0;
