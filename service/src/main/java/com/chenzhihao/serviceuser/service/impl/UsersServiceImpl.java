@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.BitFieldSubCommands;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -46,6 +47,7 @@ import static com.chenzhihao.serviceutil.constant.RedisConstants.LOGIN_USER_TTL;
  */
 @Component
 @Slf4j
+@EnableTransactionManagement
 public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users>
         implements UsersService {
 

@@ -66,6 +66,45 @@ insert into petsConfig (name, description, healthPoint, physicalDamagePoint, mag
                         physicalDefence, magicalDefence, speed, attribute, secondaryAttribute, createTime, updateTime)
 VALUES ('水蓝蓝','水元素生物',82,82,83,80,100,100,3,0,'2023-10-18 09:00:00','2023-10-18 09:00:00');
 -- ----------------------------
+-- Table structure for petStore
+-- 用户宠物仓库表
+-- ----------------------------
+DROP TABLE IF EXISTS `petStore`;
+
+CREATE TABLE `petStore` (
+                              `id` int auto_increment COMMENT  '主键自增',
+                              `pid` int COMMENT '宠物的编号',
+                              `uid` int COMMENT '玩家的编号',
+                              `healthPoint` DECIMAL COMMENT '血量 0-31',
+                              `physicalDamagePoint` DECIMAL COMMENT '物理攻击力 0-31',
+                              `magicalDamagePoin` DECIMAL comment '法术攻击力 0-31',
+                              `physicalDefence` DECIMAL comment '物理防御力 0-31',
+                              `magicalDefence` DECIMAL comment '法术防御力 0-31',
+                              `speed` DECIMAL comment '速度 0-31',
+                              `createTime` DATETIME comment '宠物获取时间',
+                              `updateTime` DATETIME comment '宠物更新时间',
+                              `performed` int comment '是否上阵 0表示不在背包 1-6或更多表示背包中的位置',
+                              PRIMARY KEY (`id`)USING BTREE
+);
+insert into petStore (pid, uid, healthPoint, physicalDamagePoint, magicalDamagePoin, physicalDefence,
+                      magicalDefence, speed, createTime, updateTime,performed) VALUES
+(1,1,1,1,1,1,1,1,'2023-10-18 09:00:00','2023-10-18 09:00:00',1);
+insert into petStore (pid, uid, healthPoint, physicalDamagePoint, magicalDamagePoin, physicalDefence,
+                      magicalDefence, speed, createTime, updateTime,performed) VALUES
+    (2,1,1,1,1,1,1,1,'2023-10-18 09:00:00','2023-10-18 09:00:00',2);
+insert into petStore (pid, uid, healthPoint, physicalDamagePoint, magicalDamagePoin, physicalDefence,
+                      magicalDefence, speed, createTime, updateTime,performed) VALUES
+    (3,1,1,1,1,1,1,1,'2023-10-18 09:00:00','2023-10-18 09:00:00',0);
+insert into petStore (pid, uid, healthPoint, physicalDamagePoint, magicalDamagePoin, physicalDefence,
+                      magicalDefence, speed, createTime, updateTime,performed) VALUES
+    (3,1,1,1,1,1,1,1,'2023-10-18 09:00:00','2023-10-18 09:00:00',0);
+insert into petStore (pid, uid, healthPoint, physicalDamagePoint, magicalDamagePoin, physicalDefence,
+                      magicalDefence, speed, createTime, updateTime,performed) VALUES
+    (3,1,1,1,1,1,1,1,'2023-10-18 09:00:00','2023-10-18 09:00:00',0);
+insert into petStore (pid, uid, healthPoint, physicalDamagePoint, magicalDamagePoin, physicalDefence,
+                      magicalDefence, speed, createTime, updateTime,performed) VALUES
+    (3,1,1,1,1,1,1,1,'2023-10-18 09:00:00','2023-10-18 09:00:00',0);
+-- ----------------------------
 -- Table structure for signs
 -- 用户签到信息记录表
 -- ----------------------------
