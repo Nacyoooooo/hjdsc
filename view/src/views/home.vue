@@ -10,11 +10,23 @@ const orderid=ref(1)
 const users=reactive({
   data:[]
 })
+const petConfig=reactive({
+  name:'',
+  description:'',
+  healthpoint:'',
+  physicaldamagepoint:'',
+  magicaldamagepoin:'',
+  physicaldefence:'',
+  magicaldefence:'',
+  speed:'',
+  attribute:'',
+  secondaryattribute:''
+})
 const testToken=()=>{
   axios.post('/api/test/testToken',
       {},
       {headers:{
-        "authorization":store.getToken()
+          "authorization":store.getToken()
         }}).then(res=>{
     console.log(res)
   })
@@ -93,10 +105,19 @@ const banUser=async (id)=>{
     console.log(res)
   })
 }
+const setPets=async ()=>{
+  await  axios.post('/api/admins/setPets',petConfig,{
+    headers:{
+      "authorization":store.getToken()
+    }
+  }).then(res=>{
+    console.log(res)
+  })
+}
 </script>
 
 <template>
-<h>helloworld</h>
+  <h>helloworld</h>
   <el-button @click="router.push('/userdata')">去用户页</el-button>
   <el-button @click="testToken">测试token是否可被携带</el-button>
   <el-button @click="sign">签到</el-button>
@@ -114,18 +135,56 @@ const banUser=async (id)=>{
   <el-input v-model="orderid"></el-input>
   <el-button @click="setorderid">更换宠物背包位次</el-button>
   <el-button @click="getUserInfo">获取用户信息</el-button>
-    <el-table :data="users.data" border style="width: 100%">
-      <el-table-column prop="id" label="学号" width="180" />
-      <el-table-column prop="name" label="名字" width="180" />
-      <el-table-column prop="status" label="账号状态" />
+  <el-table :data="users.data" border style="width: 100%">
+    <el-table-column prop="id" label="学号" width="180" />
+    <el-table-column prop="name" label="名字" width="180" />
+    <el-table-column prop="status" label="账号状态" />
 
-        <el-table-column label="账号状态" >
-          <template #default="scope">
-            <el-button @click="banUser(scope.row.id)">封禁</el-button>
-          </template>
-        </el-table-column>
+    <el-table-column label="账号状态" >
+      <template #default="scope">
+        <el-button @click="banUser(scope.row.id)">封禁</el-button>
+      </template>
+    </el-table-column>
 
-    </el-table>
+  </el-table>
+  <el-form
+      :label-position="labelPosition"
+      label-width="100px"
+      :model="petConfig"
+      style="max-width: 460px"
+  >
+    <el-form-item label="名称">
+      <el-input v-model="petConfig.name" />
+    </el-form-item>
+    <el-form-item label="描述">
+      <el-input v-model="petConfig.description" />
+    </el-form-item>
+    <el-form-item label="精力种族值">
+      <el-input v-model="petConfig.healthpoint" />
+    </el-form-item>
+    <el-form-item label="物攻种族值">
+      <el-input v-model="petConfig.physicaldamagepoint" />
+    </el-form-item>
+    <el-form-item label="魔攻种族值">
+      <el-input v-model="petConfig.magicaldamagepoin" />
+    </el-form-item>
+    <el-form-item label="物抗种族值">
+      <el-input v-model="petConfig.physicaldefence" />
+    </el-form-item>
+    <el-form-item label="魔抗种族值">
+      <el-input v-model="petConfig.magicaldefence" />
+    </el-form-item>
+    <el-form-item label="速度种族值">
+      <el-input v-model="petConfig.speed" />
+    </el-form-item>
+    <el-form-item label="主属性">
+      <el-input v-model="petConfig.attribute" />
+    </el-form-item>
+    <el-form-item label="副属性">
+      <el-input v-model="petConfig.secondaryattribute" />
+    </el-form-item>
+    <el-button @click="setPets">提交</el-button>
+  </el-form>
 </template>
 
 <style scoped>

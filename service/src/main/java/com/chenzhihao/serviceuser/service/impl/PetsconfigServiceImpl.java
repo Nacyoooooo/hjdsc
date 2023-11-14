@@ -2,6 +2,7 @@ package com.chenzhihao.serviceuser.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -79,18 +81,44 @@ public class PetsconfigServiceImpl extends ServiceImpl<PetsconfigMapper, Petscon
         }
         return Result.fail();
     }
-    //TODO 实现新增宠物功能的细化
     @Override
     public Result<?> setPetConfig(Petsconfig petsconfig) {
         if(petsconfig.getId()!=null){
-            return Result.fail();
+            return Result.fail("不能含有id");
         }
+        Date now = new Date();
+        petsconfig.setCreatetime(now);
+        petsconfig.setUpdatetime(now);
         boolean save = save(petsconfig);
         if(save){
             return Result.ok();
         }
         return Result.fail();
     }
+
+    @Override
+    public Result<?> updatePets(Petsconfig petsconfig) {
+        if(petsconfig.getId()==null){
+            return Result.fail("id不能为空");
+        }
+        Date now = new Date();
+        petsconfig.setUpdatetime(now);
+        boolean save = save(petsconfig);
+        if(save){
+            return Result.ok();
+        }
+        return Result.fail();
+    }
+
+    @Override
+    public Result<?> deletePets(Long id) {
+        boolean b = removeById(id);
+        if(b){
+            return Result.ok();
+        }
+        return Result.fail();
+    }
+
 }
 
 

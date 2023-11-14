@@ -17,4 +17,8 @@ public interface PetsconfigService extends IService<Petsconfig> {
     Result<?> getPetConfig(Integer id);
 
     Result<?> setPetConfig(Petsconfig petsconfig);
+
+    Result<?> updatePets(Petsconfig petsconfig);
+
+    Result<?> deletePets(Long id);
 }
