@@ -29,4 +29,6 @@ public Result forgetPassword();
     Result<?> getInfo();
 
     Result<?> updateInfo(UserDataDto users);
+
+    Result<?> getUserInfo();
 }

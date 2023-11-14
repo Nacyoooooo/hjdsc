@@ -3,6 +3,7 @@ package com.chenzhihao.serviceuser.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -286,6 +287,24 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users>
         stringRedisTemplate.opsForHash().putAll(tokenkey,stringObjectMap);
 
         return Result.ok();
+    }
+
+    @Override
+    public Result<?> getUserInfo() {
+        LambdaQueryWrapper<Users> select = new QueryWrapper<Users>().lambda()
+                //不查询password字段
+                // 不查询updateTime字段
+                .select(Users.class,
+                        i ->{
+                    return  !i.getProperty().equals("password")
+                            &&!i.getProperty().equals("updatetime")
+                           ;
+                });
+        List<Users> list = list(select);
+        if(null==list||list.size()<=0){
+            return Result.fail();
+        }
+        return Result.ok(list);
     }
 }
 

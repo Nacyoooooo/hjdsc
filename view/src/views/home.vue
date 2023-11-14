@@ -70,6 +70,15 @@ const setorderid=async ()=>{
     console.log(res)
   })
 }
+const getUserInfo=async ()=>{
+  await  axios.post('/api/admins/getUserInfo',{},{
+    headers:{
+      "authorization":store.getToken()
+    }
+  }).then(res=>{
+    console.log(res)
+  })
+}
 </script>
 
 <template>
@@ -90,6 +99,8 @@ const setorderid=async ()=>{
   />
   <el-input v-model="orderid"></el-input>
   <el-button @click="setorderid">更换宠物背包位次</el-button>
+  <el-button @click="getUserInfo">获取用户信息</el-button>
+
 </template>
 
 <style scoped>
