@@ -2,8 +2,9 @@ package com.chenzhihao.serviceuser.service;
 
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.chenzhihao.serviceutil.model.Petsconfig;
-import com.chenzhihao.serviceutil.result.Result;
+
+import com.chenzhihao.serviceuser.model.Petsconfig;
+import com.chenzhihao.serviceuser.result.Result;
 import org.springframework.stereotype.Service;
 
 /**
@@ -21,4 +22,6 @@ public interface PetsconfigService extends IService<Petsconfig> {
     Result<?> updatePets(Petsconfig petsconfig);
 
     Result<?> deletePets(Long id);
+
+
 }

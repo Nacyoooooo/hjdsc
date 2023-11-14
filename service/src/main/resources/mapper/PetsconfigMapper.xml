@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.chenzhihao.serviceuser.mapper.PetsconfigMapper">
 
-    <resultMap id="BaseResultMap" type="com.chenzhihao.serviceutil.model.Petsconfig">
+    <resultMap id="BaseResultMap" type="com.chenzhihao.serviceuser.model.Petsconfig">
             <id property="id" column="id" jdbcType="INTEGER"/>
             <result property="name" column="name" jdbcType="VARCHAR"/>
             <result property="description" column="description" jdbcType="VARCHAR"/>

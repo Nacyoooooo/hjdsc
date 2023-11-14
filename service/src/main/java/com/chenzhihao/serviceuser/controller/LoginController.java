@@ -1,9 +1,10 @@
 package com.chenzhihao.serviceuser.controller;
 
-import com.chenzhihao.serviceutil.dto.LoginDto;
+
+import com.chenzhihao.serviceuser.dto.LoginDto;
+import com.chenzhihao.serviceuser.dto.RegisterDto;
+import com.chenzhihao.serviceuser.result.Result;
 import com.chenzhihao.serviceuser.service.UsersService;
-import com.chenzhihao.serviceutil.dto.RegisterDto;
-import com.chenzhihao.serviceutil.result.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

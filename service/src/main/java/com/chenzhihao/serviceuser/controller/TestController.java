@@ -1,8 +1,6 @@
 package com.chenzhihao.serviceuser.controller;
 
-import com.chenzhihao.commonutil.JwtHelper;
-import com.chenzhihao.serviceutil.dto.LoginDto;
-import com.chenzhihao.serviceutil.result.Result;
+import com.chenzhihao.serviceuser.result.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 

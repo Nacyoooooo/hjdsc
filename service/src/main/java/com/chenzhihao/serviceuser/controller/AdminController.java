@@ -1,9 +1,11 @@
 package com.chenzhihao.serviceuser.controller;
 
+import com.chenzhihao.serviceuser.model.Petsconfig;
+import com.chenzhihao.serviceuser.result.Result;
+import com.chenzhihao.serviceuser.service.PetparkService;
 import com.chenzhihao.serviceuser.service.PetsconfigService;
 import com.chenzhihao.serviceuser.service.UsersService;
-import com.chenzhihao.serviceutil.model.Petsconfig;
-import com.chenzhihao.serviceutil.result.Result;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +19,8 @@ public class AdminController {
     private UsersService usersService;
     @Autowired
     private PetsconfigService petsconfigService;
+    @Autowired
+    private PetparkService petparkService;
     @PostMapping("getUserInfo")
     @ResponseBody
     public Result<?> getUserInfo(){
@@ -41,5 +45,11 @@ public class AdminController {
     @ResponseBody
     public Result<?> deletePets(@PathVariable Long id){
         return petsconfigService.deletePets(id);
+    }
+
+    @PostMapping("/setPark/{id}/{count}")
+    @ResponseBody
+    public Result<?> setPark(@PathVariable Long id,@PathVariable Long count){
+        return petparkService.setPark(id,count);
     }
 }

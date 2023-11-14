@@ -1,6 +1,6 @@
 package com.chenzhihao.serviceuser;
 
-import com.chenzhihao.commonutil.JwtHelper;
+import com.chenzhihao.serviceuser.util.JwtHelper;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 

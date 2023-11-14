@@ -1,9 +1,9 @@
 package com.chenzhihao.serviceuser.controller;
 
+import com.chenzhihao.serviceuser.model.Petsconfig;
+import com.chenzhihao.serviceuser.result.Result;
 import com.chenzhihao.serviceuser.service.PetsconfigService;
 import com.chenzhihao.serviceuser.service.PetstoreService;
-import com.chenzhihao.serviceutil.model.Petsconfig;
-import com.chenzhihao.serviceutil.result.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

@@ -1,7 +1,5 @@
 package com.chenzhihao.serviceuser.service.impl;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -9,20 +7,17 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import com.chenzhihao.serviceuser.mapper.PetstoreMapper;
+import com.chenzhihao.serviceuser.model.Petstore;
+import com.chenzhihao.serviceuser.model.Users;
+import com.chenzhihao.serviceuser.result.Result;
 import com.chenzhihao.serviceuser.service.PetstoreService;
-import com.chenzhihao.serviceutil.model.Petstore;
-import com.chenzhihao.serviceutil.model.Users;
-import com.chenzhihao.serviceutil.result.Result;
-import com.chenzhihao.serviceutil.util.UserHolder;
-import com.fasterxml.jackson.databind.util.JSONPObject;
+import com.chenzhihao.serviceuser.util.UserHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 /**

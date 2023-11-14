@@ -2,11 +2,8 @@ package com.chenzhihao.serviceuser.controller;
 
 import com.chenzhihao.serviceuser.service.SignsService;
 import com.chenzhihao.serviceuser.service.UsersService;
-import com.chenzhihao.serviceutil.dto.LoginDto;
-import com.chenzhihao.serviceutil.dto.UserDataDto;
-import com.chenzhihao.serviceutil.model.Users;
-import com.chenzhihao.serviceutil.result.Result;
-import com.chenzhihao.serviceutil.util.UserUtil;
+import com.chenzhihao.serviceuser.dto.UserDataDto;
+import com.chenzhihao.serviceuser.result.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

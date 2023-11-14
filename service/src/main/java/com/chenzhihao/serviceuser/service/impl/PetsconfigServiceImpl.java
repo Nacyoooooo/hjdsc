@@ -2,19 +2,17 @@ package com.chenzhihao.serviceuser.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.api.R;
+
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import com.chenzhihao.serviceuser.mapper.PetsconfigMapper;
+import com.chenzhihao.serviceuser.model.Petsconfig;
+import com.chenzhihao.serviceuser.result.Result;
 import com.chenzhihao.serviceuser.service.PetsconfigService;
-import com.chenzhihao.serviceutil.constant.RedisConstants;
-import com.chenzhihao.serviceutil.model.Petsconfig;
-import com.chenzhihao.serviceutil.model.Users;
-import com.chenzhihao.serviceutil.result.Result;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +21,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import static com.chenzhihao.serviceutil.constant.RedisConstants.*;
+import static com.chenzhihao.serviceuser.constant.RedisConstants.PETS_CONFIG_KEY;
+import static com.chenzhihao.serviceuser.constant.RedisConstants.PETS_CONFIG_TTL;
+
 
 /**
 * @author 86159
@@ -31,7 +31,6 @@ import static com.chenzhihao.serviceutil.constant.RedisConstants.*;
 * @createDate 2023-11-07 22:56:52
 */
 @Service
-@Slf4j
 public class PetsconfigServiceImpl extends ServiceImpl<PetsconfigMapper, Petsconfig>
     implements PetsconfigService {
     @Autowired
@@ -41,7 +40,6 @@ public class PetsconfigServiceImpl extends ServiceImpl<PetsconfigMapper, Petscon
     public Result<?> getPetConfig(Integer id) {
         //设置查询的key
         String key= PETS_CONFIG_KEY+id;
-        log.info("key="+key);
         //从redis中查找
         Map<Object, Object> entries = stringRedisTemplate.opsForHash().entries(key);
         //如果是不是空的，则将其转化为对象，并返回给前端
@@ -118,6 +116,8 @@ public class PetsconfigServiceImpl extends ServiceImpl<PetsconfigMapper, Petscon
         }
         return Result.fail();
     }
+
+
 
 }
 

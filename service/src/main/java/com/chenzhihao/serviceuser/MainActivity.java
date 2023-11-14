@@ -7,7 +7,6 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication
-@ComponentScan("com.chenzhihao")
 @EnableTransactionManagement
 @EnableAspectJAutoProxy(exposeProxy = true)
 public class MainActivity {

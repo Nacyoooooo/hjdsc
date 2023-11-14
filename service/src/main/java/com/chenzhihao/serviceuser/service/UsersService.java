@@ -2,11 +2,12 @@ package com.chenzhihao.serviceuser.service;
 
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.chenzhihao.serviceutil.dto.LoginDto;
-import com.chenzhihao.serviceutil.dto.RegisterDto;
-import com.chenzhihao.serviceutil.dto.UserDataDto;
-import com.chenzhihao.serviceutil.model.Users;
-import com.chenzhihao.serviceutil.result.Result;
+
+import com.chenzhihao.serviceuser.dto.LoginDto;
+import com.chenzhihao.serviceuser.dto.RegisterDto;
+import com.chenzhihao.serviceuser.dto.UserDataDto;
+import com.chenzhihao.serviceuser.model.Users;
+import com.chenzhihao.serviceuser.result.Result;
 import org.springframework.stereotype.Service;
 
 

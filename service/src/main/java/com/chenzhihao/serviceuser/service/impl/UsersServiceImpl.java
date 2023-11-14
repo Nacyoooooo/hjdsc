@@ -5,39 +5,36 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.chenzhihao.commonutil.JwtHelper;
-import com.chenzhihao.commonutil.MD5;
-import com.chenzhihao.serviceutil.annotation.AutoFill;
-import com.chenzhihao.serviceutil.dto.LoginDto;
-import com.chenzhihao.serviceutil.dto.RegisterDto;
-import com.chenzhihao.serviceutil.dto.UserDataDto;
-import com.chenzhihao.serviceutil.model.Users;
-import com.chenzhihao.serviceutil.annotation.AutoValidate;
+import com.chenzhihao.serviceuser.annotation.AutoValidate;
+import com.chenzhihao.serviceuser.dto.LoginDto;
+import com.chenzhihao.serviceuser.dto.RegisterDto;
+import com.chenzhihao.serviceuser.dto.UserDataDto;
 import com.chenzhihao.serviceuser.mapper.UsersMapper;
+import com.chenzhihao.serviceuser.model.Users;
+import com.chenzhihao.serviceuser.result.Result;
+import com.chenzhihao.serviceuser.result.ResultCodeEnum;
 import com.chenzhihao.serviceuser.service.UsersService;
-import com.chenzhihao.serviceutil.result.Result;
-import com.chenzhihao.serviceutil.result.ResultCodeEnum;
-import com.chenzhihao.serviceutil.util.UserHolder;
-import com.chenzhihao.serviceutil.util.UserUtil;
+import com.chenzhihao.serviceuser.util.JwtHelper;
+import com.chenzhihao.serviceuser.util.MD5;
+
+import com.chenzhihao.serviceuser.util.UserHolder;
+import com.chenzhihao.serviceuser.util.UserUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.BitFieldSubCommands;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import static com.chenzhihao.serviceutil.constant.RedisConstants.*;
+import static com.chenzhihao.serviceuser.constant.RedisConstants.*;
 
 
 /**
@@ -45,7 +42,7 @@ import static com.chenzhihao.serviceutil.constant.RedisConstants.*;
  * @description 针对表【users】的数据库操作Service实现
  * @createDate 2023-11-02 22:42:59
  */
-@Component
+@Service
 @Slf4j
 @EnableTransactionManagement
 public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users>
@@ -57,7 +54,7 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users>
     private UserUtil util;
     @AutoValidate
     @Override
-    public Result  Login(LoginDto user) {
+    public Result Login(LoginDto user) {
         //检查user的参数是否合法
         //如果合法，开始校验
         //根据id查找用户

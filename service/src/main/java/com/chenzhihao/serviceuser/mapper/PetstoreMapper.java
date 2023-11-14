@@ -2,7 +2,7 @@ package com.chenzhihao.serviceuser.mapper;
 
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.chenzhihao.serviceutil.model.Petstore;
+import com.chenzhihao.serviceuser.model.Petstore;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
