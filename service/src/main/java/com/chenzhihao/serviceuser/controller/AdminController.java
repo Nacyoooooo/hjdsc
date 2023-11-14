@@ -19,4 +19,9 @@ public class AdminController {
     public Result<?> getUserInfo(){
         return usersService.getUserInfo();
     }
+    @PostMapping("banUser/{uid}")
+    @ResponseBody
+    public Result<?> banUser(@PathVariable Long uid){
+        return usersService.banUser(uid);
+    }
 }

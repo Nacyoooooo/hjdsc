@@ -306,6 +306,22 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users>
         }
         return Result.ok(list);
     }
+
+    @Override
+    public Result<?> banUser(Long uid) {
+        QueryWrapper<Users> get = new QueryWrapper<Users>()
+                .eq("id", uid);
+        Users one = getOne(get);
+        if(one==null){
+            return Result.fail("用户不存在");
+        }
+        one.setStatus(2);
+        boolean b = saveOrUpdate(one);
+        if(!b){
+            return Result.fail("封禁失败");
+        }
+        return Result.ok("封禁成功");
+    }
 }
 
 

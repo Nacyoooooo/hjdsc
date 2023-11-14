@@ -31,4 +31,6 @@ public Result forgetPassword();
     Result<?> updateInfo(UserDataDto users);
 
     Result<?> getUserInfo();
+
+    Result<?> banUser(Long uid);
 }

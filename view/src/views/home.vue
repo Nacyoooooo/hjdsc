@@ -2,11 +2,14 @@
 import axios from "axios";
 import {useUserInfoStore} from "@/store/store";
 import router from "@/router";
-import {ref} from "vue";
+import {reactive, ref} from "vue";
 const store=useUserInfoStore()
 const petId=ref(0)
 const storePage=ref(1)
 const orderid=ref(1)
+const users=reactive({
+  data:[]
+})
 const testToken=()=>{
   axios.post('/api/test/testToken',
       {},
@@ -77,6 +80,17 @@ const getUserInfo=async ()=>{
     }
   }).then(res=>{
     console.log(res)
+    users.data=res.data.data
+  })
+  console.log(users.data)
+}
+const banUser=async (id)=>{
+  await  axios.post('/api/admins/banUser/'+id,{},{
+    headers:{
+      "authorization":store.getToken()
+    }
+  }).then(res=>{
+    console.log(res)
   })
 }
 </script>
@@ -100,7 +114,18 @@ const getUserInfo=async ()=>{
   <el-input v-model="orderid"></el-input>
   <el-button @click="setorderid">更换宠物背包位次</el-button>
   <el-button @click="getUserInfo">获取用户信息</el-button>
+    <el-table :data="users.data" border style="width: 100%">
+      <el-table-column prop="id" label="学号" width="180" />
+      <el-table-column prop="name" label="名字" width="180" />
+      <el-table-column prop="status" label="账号状态" />
 
+        <el-table-column label="账号状态" >
+          <template #default="scope">
+            <el-button @click="banUser(scope.row.id)">封禁</el-button>
+          </template>
+        </el-table-column>
+
+    </el-table>
 </template>
 
 <style scoped>
