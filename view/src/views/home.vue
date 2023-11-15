@@ -22,6 +22,9 @@ const petConfig=reactive({
   attribute:'',
   secondaryattribute:''
 })
+const petPark=reactive({
+  data:[]
+})
 const testToken=()=>{
   axios.post('/api/test/testToken',
       {},
@@ -114,6 +117,25 @@ const setPets=async ()=>{
     console.log(res)
   })
 }
+const getPetParkInfo=async ()=>{
+  await  axios.post('/api/park/get',{},{
+    headers:{
+      "authorization":store.getToken()
+    }
+  }).then(res=>{
+    console.log(res)
+    petPark.data=res.data.data
+  })
+}
+const getPet=async (cid)=>{
+  await  axios.post('/api/park/getPet/'+cid,{},{
+    headers:{
+      "authorization":store.getToken()
+    }
+  }).then(res=>{
+    console.log(res)
+  })
+}
 </script>
 
 <template>
@@ -142,7 +164,7 @@ const setPets=async ()=>{
 
     <el-table-column label="账号状态" >
       <template #default="scope">
-        <el-button @click="banUser(scope.row.id)">封禁</el-button>
+        <el-button @click="getPet(scope.row.id)">封禁</el-button>
       </template>
     </el-table-column>
 
@@ -185,6 +207,21 @@ const setPets=async ()=>{
     </el-form-item>
     <el-button @click="setPets">提交</el-button>
   </el-form>
+  <el-button @click="getPetParkInfo">获取宠物园信息</el-button>
+  <el-table :data="petPark.data" border style="width: 100%">
+    <el-table-column prop="id" label="项目号" width="180" />
+    <el-table-column prop="pid" label="宠物编号" width="180" />
+    <el-table-column prop="count" label="剩余数量" />
+    <el-table-column prop="catched" label="是否可被捕捉" />
+    <el-table-column prop="createtime" label="创建时间" />
+    <el-table-column prop="updatetime" label="更新时间" />
+    <el-table-column label="操作" >
+      <template #default="scope">
+        <el-button @click="getPet(scope.row.id)">获取</el-button>
+      </template>
+    </el-table-column>
+
+  </el-table>
 </template>
 
 <style scoped>

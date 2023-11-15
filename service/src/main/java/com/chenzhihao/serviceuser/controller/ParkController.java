@@ -20,4 +20,9 @@ public class ParkController {
     public Result<?> get(){
         return petparkService.getCaputedPets();
     }
+    @PostMapping("/getPet/{parkid}")
+    @ResponseBody
+    public Result<?> getPet(@PathVariable Long parkid){
+        return petparkService.getPet(parkid);
+    }
 }

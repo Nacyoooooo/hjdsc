@@ -17,4 +17,6 @@ public interface PetparkService extends IService<Petpark> {
     Result<?> setPark(Long id, Long count);
 
     Result<?> getCaputedPets();
+
+    Result<?> getPet(Long parkid);
 }

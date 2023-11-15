@@ -3,13 +3,17 @@ package com.chenzhihao.serviceuser.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
+import com.chenzhihao.serviceuser.mapper.CapturerecordMapper;
 import com.chenzhihao.serviceuser.mapper.PetparkMapper;
 import com.chenzhihao.serviceuser.mapper.PetsconfigMapper;
+import com.chenzhihao.serviceuser.model.Capturerecord;
 import com.chenzhihao.serviceuser.model.Petpark;
 import com.chenzhihao.serviceuser.model.Petsconfig;
+import com.chenzhihao.serviceuser.model.Users;
 import com.chenzhihao.serviceuser.result.Result;
 import com.chenzhihao.serviceuser.service.PetparkService;
 
+import com.chenzhihao.serviceuser.util.UserHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +30,8 @@ public class PetparkServiceImpl extends ServiceImpl<PetparkMapper, Petpark>
     implements PetparkService {
     @Autowired
     private PetsconfigMapper petsconfigMapper;
+    @Autowired
+    private CapturerecordMapper capturerecordMapper;
 
     @Override
     public Result<?> setPark(Long id, Long count) {
@@ -64,6 +70,42 @@ public class PetparkServiceImpl extends ServiceImpl<PetparkMapper, Petpark>
             return Result.fail();
         }
         return Result.ok(catched);
+    }
+
+    @Override
+    public Result<?> getPet(Long parkid) {
+        Users user = UserHolder.getUser();
+        if(null==user){
+            return Result.fail();
+        }
+        QueryWrapper<Petpark> park = new QueryWrapper<Petpark>()
+                //该数据是否存在
+                .eq("id", parkid)
+                //是否可被捕捉
+                .eq("catched", 1)
+                //数量是否大于0
+                .gt("count", 0);
+        Petpark one = getOne(park);
+        if(one==null){
+            return Result.fail();
+        }
+        one.setCount(one.getCount()-1);
+        one.setUpdatetime(new Date());
+        boolean b = saveOrUpdate(one);
+        if(!b){
+            return Result.fail();
+        }
+        Capturerecord capturerecord = new Capturerecord();
+        capturerecord.setCid(parkid.intValue());
+        capturerecord.setPid(one.getPid());
+        capturerecord.setUid(user.getId().intValue());
+        capturerecord.setCreatetime(new Date());
+        capturerecord.setUpdatetime(new Date());
+        int insert = capturerecordMapper.insert(capturerecord);
+        if(insert<=0){
+            return Result.fail();
+        }
+        return Result.ok();
     }
 }
 
