@@ -1,6 +1,7 @@
 package com.chenzhihao.serviceuser.service.impl;
 
 import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -179,6 +180,26 @@ public class PetstoreServiceImpl extends ServiceImpl<PetstoreMapper, Petstore>
             });
             return Result.ok(pets);
         }
+    }
+
+    @Override
+    public Result<?> getUserPets() {
+        LambdaQueryWrapper<Petstore> select = new QueryWrapper<Petstore>().lambda()
+                .select(Petstore.class,i -> {
+                    return  //查询id
+                            i.getProperty().equals("id")
+                                    //查询宠物的编号
+                                    || i.getProperty().equals("pid")
+                                    //查询用户的id
+                                    || i.getProperty().equals("uid")
+                                    //查询宠物的获取时间
+                                    || i.getProperty().equals("createtime");
+                });
+        List<Petstore> list = list(select);
+        if(null==list||list.size()<=0){
+            return Result.fail();
+        }
+        return Result.ok(list);
     }
 }
 

@@ -10,6 +10,7 @@ const orderid=ref(1)
 const users=reactive({
   data:[]
 })
+
 const petConfig=reactive({
   name:'',
   description:'',
@@ -23,6 +24,9 @@ const petConfig=reactive({
   secondaryattribute:''
 })
 const petPark=reactive({
+  data:[]
+})
+const userStore=reactive({
   data:[]
 })
 const testToken=()=>{
@@ -136,6 +140,16 @@ const getPet=async (cid)=>{
     console.log(res)
   })
 }
+const getUserStoreInfo=async ()=>{
+  await  axios.post('/api/admins/getUserPets',{},{
+    headers:{
+      "authorization":store.getToken()
+    }
+  }).then(res=>{
+    console.log(res)
+    userStore.data=res.data.data
+  })
+}
 </script>
 
 <template>
@@ -220,6 +234,14 @@ const getPet=async (cid)=>{
         <el-button @click="getPet(scope.row.id)">获取</el-button>
       </template>
     </el-table-column>
+
+  </el-table>
+  <el-button @click="getUserStoreInfo">获取用户所拥有的宠物信息</el-button>
+  <el-table :data="userStore.data" border style="width: 100%">
+    <el-table-column prop="id" label="id" width="180" />
+    <el-table-column prop="pid" label="宠物编号" width="180" />
+    <el-table-column prop="uid" label="玩家id" />
+    <el-table-column prop="createtime" label="获取时间" />
 
   </el-table>
 </template>

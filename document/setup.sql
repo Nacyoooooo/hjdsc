@@ -73,16 +73,15 @@ VALUES ('水蓝蓝','水元素生物',82,82,83,80,100,100,3,0,'2023-10-18 09:00:
 DROP TABLE IF EXISTS `petPark`;
 
 CREATE TABLE `petPark` (
-                              `id` int auto_increment COMMENT  '主键',
+                              `id` int  COMMENT  '主键',
                               `pid` int COMMENT '宠物的编号',
                               `count` int COMMENT '宠物的数量',
                               `catched` int COMMENT '是否可被捕捉 1是可以 2是不可以',
                               `createTime` DATETIME comment '宠物创建时间',
-                              `updateTime` DATETIME comment '宠物更新时间',
-                              PRIMARY KEY (`id`)USING BTREE
+                              `updateTime` DATETIME comment '宠物更新时间'
 );
-insert into petPark (pid, count, catched, createTime, updateTime) VALUES
-(1,100,1,'2023-10-18 09:00:00','2023-10-18 09:00:00');
+insert into petPark (pid, count, catched, createTime, updateTime,id) VALUES
+(1,100,1,'2023-10-18 09:00:00','2023-10-18 09:00:00',1);
 -- ----------------------------
 -- Table structure for captureRecord
 -- 宠物园捕捉记录
@@ -90,13 +89,12 @@ insert into petPark (pid, count, catched, createTime, updateTime) VALUES
 DROP TABLE IF EXISTS `captureRecord`;
 
 CREATE TABLE `captureRecord` (
-                           `id` int auto_increment COMMENT  '主键',
+                           `id` int  COMMENT  '主键',
                            `cid` int COMMENT '宠物园捕捉项目的编号',
                            `uid` int COMMENT '玩家的id',
                            `pid` int COMMENT '宠物的编号',
                            `createTime` DATETIME comment '记录创建时间',
-                           `updateTime` DATETIME comment '记录更新时间',
-                           PRIMARY KEY (`id`)USING BTREE
+                           `updateTime` DATETIME comment '记录更新时间'
 );
 -- ----------------------------
 -- Table structure for petStore

@@ -4,6 +4,7 @@ import com.chenzhihao.serviceuser.model.Petsconfig;
 import com.chenzhihao.serviceuser.result.Result;
 import com.chenzhihao.serviceuser.service.PetparkService;
 import com.chenzhihao.serviceuser.service.PetsconfigService;
+import com.chenzhihao.serviceuser.service.PetstoreService;
 import com.chenzhihao.serviceuser.service.UsersService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,8 @@ public class AdminController {
     private PetsconfigService petsconfigService;
     @Autowired
     private PetparkService petparkService;
+    @Autowired
+    private PetstoreService petstoreService;
     @PostMapping("getUserInfo")
     @ResponseBody
     public Result<?> getUserInfo(){
@@ -51,5 +54,10 @@ public class AdminController {
     @ResponseBody
     public Result<?> setPark(@PathVariable Long id,@PathVariable Long count){
         return petparkService.setPark(id,count);
+    }
+    @PostMapping("/getUserPets")
+    @ResponseBody
+    public Result<?> getUserPets(){
+        return petstoreService.getUserPets();
     }
 }

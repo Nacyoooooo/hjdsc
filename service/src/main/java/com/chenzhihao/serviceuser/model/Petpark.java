@@ -16,7 +16,6 @@ public class Petpark implements Serializable {
     /**
      * 主键
      */
-    @TableId(type = IdType.AUTO)
     private Integer id;
 
     /**
