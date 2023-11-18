@@ -42,7 +42,8 @@ const requestStatus=async()=>{
   })
 }
 const usedSkill=ref(1)
-const useSkill=async()=>{
+const useSkill=async(number)=>{
+  usedSkill.value=number
   await  axios.post('/api/play/useSkill/'+usedSkill.value,{},{
     headers:{
       "authorization":store.getToken()
@@ -55,7 +56,7 @@ onMounted(async ()=>{
   requestStatus()
   setInterval(()=>{
     requestStatus()
-  },1500)
+  },500)
 })
 </script>
 

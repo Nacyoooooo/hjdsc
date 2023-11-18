@@ -3,6 +3,7 @@ package com.chenzhihao.serviceuser.util;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.chenzhihao.serviceuser.constant.PlayerType;
 import com.chenzhihao.serviceuser.dto.PlayData;
 import com.chenzhihao.serviceuser.mapper.PetsconfigMapper;
 import com.chenzhihao.serviceuser.mapper.PetstoreMapper;
@@ -208,7 +209,8 @@ public class PetUtil {
         playData.setOrder(pet.getOrder());
         return playData;
     }
-    public boolean useSkill(Pet pet,Pet enemypet,Integer skillid){
+    public boolean useSkill(Pet pet,Pet enemypet,Integer skillid,PlayerType playerType){
+
         if(pet==null||enemypet==null||skillid==null){
             return false;
         }
@@ -217,6 +219,23 @@ public class PetUtil {
         Map<Integer, PetSkill> skills = pet.getSkills();
         if(skills==null){
             return false;
+        }
+        //如果是机器人，则自动判断使用哪个技能，左优先
+        Integer orderId=skillid;
+        switch (playerType){
+            case PLAYER:break;
+            case ROBOT:
+                for (Map.Entry<Integer, PetSkill> entry : skills.entrySet()) {
+                    PetSkill value = entry.getValue();
+                    if(value==null){
+                        continue;
+                    }
+                    if(value.getUsedTimes()>=0){
+                        skillid=entry.getKey();
+                        break;
+                    }
+                }
+                break;
         }
         PetSkill petSkill = skills.get(skillid.intValue());
         //如果是物理伤害

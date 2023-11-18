@@ -19,4 +19,6 @@ public class FightArea {
     private Player playerOne;
     //玩家2信息
     private Player playerTwo;
+    //获胜者id，为-1时意味着战斗还没结束
+    private Integer winnerId=-1;
 }

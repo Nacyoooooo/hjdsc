@@ -261,6 +261,9 @@ public class PlayServiceImpl implements PlayService {
         if(fightArea==null){
             return Result.fail();
         }
+        if(fightArea.getWinnerId()!=-1){
+            return Result.fail("游戏已结束！");
+        }
         Integer enemyId;
         if(fightArea.getPlayerOneId().equals(user.getId().intValue())){
             enemyId=fightArea.getPlayerTwoId();
@@ -315,7 +318,49 @@ public class PlayServiceImpl implements PlayService {
         if(enemypet==null){
             return Result.fail();
         }
-        petUtil.useSkill(pet,enemypet,skillid.intValue());
+        petUtil.useSkill(pet,enemypet,skillid.intValue(), myself.getPlayerType());
+        //对手已阵亡
+        if(enemypet.getCurrentBlood()<=0){
+            //从宠物列表中寻找能代替上去的宠物
+            Integer o=enemy.getOrderId();
+            for (Map.Entry<Integer, Pet> entry : enemypets.entrySet()) {
+                if(entry.getKey()!=enemy.getOrderId()){
+                    o=entry.getKey();
+                }
+            }
+            if(o==enemy.getOrderId()){
+                //如果没有可替换的，则直接判对手输
+                fightArea.setWinnerId(myself.getOrderId());
+                stringRedisTemplate.opsForValue().set(situationKey,JSONUtil.toJsonStr(fightArea));
+                myself.setPets(pets);
+                stringRedisTemplate.opsForValue().set(myKey,JSONUtil.toJsonStr(myself));
+                enemypets.put(enemyorderId,enemypet);
+                enemy.setPets(enemypets);
+                stringRedisTemplate.opsForValue().set(enemyKey,JSONUtil.toJsonStr(enemy));
+                return Result.ok();
+            }
+        }
+        petUtil.useSkill(enemypet,pet,1, enemy.getPlayerType());
+        if(pet.getCurrentBlood()<=0){
+            //从宠物列表中寻找能代替上去的宠物
+            Integer o=myself.getOrderId();
+            for (Map.Entry<Integer, Pet> entry : pets.entrySet()) {
+                if(entry.getKey()!=myself.getOrderId()){
+                    o=entry.getKey();
+                }
+            }
+            if(o==myself.getOrderId()){
+                //如果没有可替换的，则直接判对手输
+                fightArea.setWinnerId(enemy.getOrderId());
+                stringRedisTemplate.opsForValue().set(situationKey,JSONUtil.toJsonStr(fightArea));
+                myself.setPets(pets);
+                stringRedisTemplate.opsForValue().set(myKey,JSONUtil.toJsonStr(myself));
+                enemypets.put(enemyorderId,enemypet);
+                enemy.setPets(enemypets);
+                stringRedisTemplate.opsForValue().set(enemyKey,JSONUtil.toJsonStr(enemy));
+                return Result.ok();
+            }
+        }
         /********************************************************/
 /********************************************************/
 //        Map<Integer, PetSkill> enemypetSkills = enemypet.getSkills();
