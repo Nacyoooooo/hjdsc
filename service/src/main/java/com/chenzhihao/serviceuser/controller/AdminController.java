@@ -29,6 +29,16 @@ public class AdminController {
     public Result<?> getUserInfo(){
         return usersService.getUserInfo();
     }
+
+    /**
+     * 分页查询
+     * @return
+     */
+    @PostMapping("getUserInfo/{pageId}")
+    @ResponseBody
+    public Result<?> getUserInfoPagination(@PathVariable Integer pageId){
+        return usersService.getUserInfo(pageId);
+    }
     @PostMapping("/banUser/{uid}")
     @ResponseBody
     public Result<?> banUser(@PathVariable Long uid){
@@ -59,5 +69,10 @@ public class AdminController {
     @ResponseBody
     public Result<?> getUserPets(){
         return petstoreService.getUserPets();
+    }
+    @PostMapping("/getUserCount")
+    @ResponseBody
+    public Result<?> getUserCount(){
+        return usersService.getUserCount();
     }
 }

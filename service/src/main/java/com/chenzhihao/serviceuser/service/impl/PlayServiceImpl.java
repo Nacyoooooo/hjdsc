@@ -241,12 +241,7 @@ public class PlayServiceImpl implements PlayService {
         //从redis中获取战局情况
         //获取自己的目前信息
         String myKey=PLAY_STATUS_KEY+user.getId();
-        Boolean exist = stringRedisTemplate.hasKey(myKey);
-        if(!exist){
-            return Result.fail();
-        }
-        String statusJson = stringRedisTemplate.opsForValue().get(myKey);
-        Player myself = JSONUtil.toBean(statusJson, Player.class);
+        Player myself = petUtil.getPlayer(user.getId().intValue());
         if(myself==null){
             return Result.fail();
         }
@@ -262,7 +257,9 @@ public class PlayServiceImpl implements PlayService {
             return Result.fail();
         }
         if(fightArea.getWinnerId()!=-1){
-            return Result.fail("游戏已结束！");
+            Result<Object> fail = Result.fail("游戏已结束！");
+            fail.setCode(300);
+            return fail;
         }
         Integer enemyId;
         if(fightArea.getPlayerOneId().equals(user.getId().intValue())){
@@ -296,17 +293,7 @@ public class PlayServiceImpl implements PlayService {
         if(pet==null){
             return Result.fail();
         }
-//        Map<Integer, PetSkill> skills = pet.getSkills();
-//        if(skills==null||skills.isEmpty()){
-//            return Result.fail();
-//        }
-//        PetSkill petSkill = skills.get(skillid.intValue());
-//        if(petSkill==null){
-//            return Result.fail();
-//        }
-        /********************************************************/
         Map<Integer, Pet> enemypets = enemy.getPets();
-
         if(enemypets==null||enemypets.size()<=0){
             return Result.fail();
         }
@@ -318,7 +305,10 @@ public class PlayServiceImpl implements PlayService {
         if(enemypet==null){
             return Result.fail();
         }
-        petUtil.useSkill(pet,enemypet,skillid.intValue(), myself.getPlayerType());
+        boolean success = petUtil.useSkill(pet, enemypet, skillid.intValue(), myself.getPlayerType());
+        if(!success){
+            return Result.fail();
+        }
         //对手已阵亡
         if(enemypet.getCurrentBlood()<=0){
             //从宠物列表中寻找能代替上去的宠物
@@ -340,7 +330,10 @@ public class PlayServiceImpl implements PlayService {
                 return Result.ok();
             }
         }
-        petUtil.useSkill(enemypet,pet,1, enemy.getPlayerType());
+        success=petUtil.useSkill(enemypet,pet,1, enemy.getPlayerType());
+        if(!success){
+            return Result.fail();
+        }
         if(pet.getCurrentBlood()<=0){
             //从宠物列表中寻找能代替上去的宠物
             Integer o=myself.getOrderId();

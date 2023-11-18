@@ -3,6 +3,7 @@ package com.chenzhihao.serviceuser.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -29,6 +30,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,6 +54,7 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users>
     private StringRedisTemplate stringRedisTemplate;
     @Autowired
     private UserUtil util;
+
     @AutoValidate
     @Override
     public Result Login(LoginDto user) {
@@ -318,6 +321,80 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users>
             return Result.fail("封禁失败");
         }
         return Result.ok("封禁成功");
+    }
+
+    @Override
+    public Result<?> getUserInfo(Integer pageId) {
+        if(pageId==null||pageId<0){
+            return Result.fail();
+        }
+        //从redis中寻找
+        String key=ADMIN_GETUSER_KEY;
+        Boolean exist = stringRedisTemplate.hasKey(key);
+        //若没有，则从数据库中寻找
+        if(!exist){
+            LambdaQueryWrapper<Users> select = new QueryWrapper<Users>().lambda()
+                    //不查询password字段
+                    // 不查询updateTime字段
+                    .select(Users.class,
+                            i ->{
+                                return  !i.getProperty().equals("password")
+                                        &&!i.getProperty().equals("updatetime")
+                                        ;
+                            });
+            List<Users> list = list(select);
+            if(list==null||list.isEmpty()){
+                return Result.fail();
+            }
+            list.forEach(user->{
+                stringRedisTemplate.opsForList().rightPush(key, JSONUtil.toJsonStr(user));
+            });
+        }
+        //在数据库中手机信息，挂载到redis上
+        Long size = stringRedisTemplate.opsForList().size(key);
+        List<String> list = stringRedisTemplate.opsForList().range(key, 10 * (pageId - 1), 10 * pageId);
+        if(list==null){
+            return Result.fail();
+        }
+        List<Users>users=new ArrayList<>();
+        list.forEach(l->{
+            users.add(JSONUtil.toBean(l,Users.class));
+        });
+        if(users==null||users.isEmpty()){
+            return Result.fail();
+        }
+        //从redis中查找
+        //整理数据
+        return Result.ok(users);
+    }
+
+    @Override
+    public Result<?> getUserCount() {
+        //从redis中寻找
+        String key=ADMIN_GETUSER_KEY;
+        Boolean exist = stringRedisTemplate.hasKey(key);
+        //若没有，则从数据库中寻找
+        if(!exist){
+            LambdaQueryWrapper<Users> select = new QueryWrapper<Users>().lambda()
+                    //不查询password字段
+                    // 不查询updateTime字段
+                    .select(Users.class,
+                            i ->{
+                                return  !i.getProperty().equals("password")
+                                        &&!i.getProperty().equals("updatetime")
+                                        ;
+                            });
+            List<Users> list = list(select);
+            if(list==null||list.isEmpty()){
+                return Result.fail();
+            }
+            list.forEach(user->{
+                stringRedisTemplate.opsForList().rightPush(key, JSONUtil.toJsonStr(user));
+            });
+        }
+        //在数据库中手机信息，挂载到redis上
+        Long size = stringRedisTemplate.opsForList().size(key);
+        return Result.ok(size);
     }
 }
 

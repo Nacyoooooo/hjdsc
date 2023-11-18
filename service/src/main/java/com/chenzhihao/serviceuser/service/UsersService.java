@@ -34,4 +34,8 @@ public Result forgetPassword();
     Result<?> getUserInfo();
 
     Result<?> banUser(Long uid);
+
+    Result<?> getUserInfo(Integer pageId);
+
+    Result<?> getUserCount();
 }

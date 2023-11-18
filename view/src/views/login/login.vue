@@ -17,7 +17,13 @@ const login=async ()=>{
     if(res.data.code==200){
       ElMessage.success("登录成功")
       store.setToken(res.data.data)
-      router.push('/home')
+      if(loginForm.authority==1){
+        router.push('/admin')
+      }
+      else {
+
+      }
+
     }else {
       ElMessage.error('登录失败')
     }

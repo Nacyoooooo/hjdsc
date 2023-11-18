@@ -1,8 +1,8 @@
 package com.chenzhihao.serviceuser;
 
-import com.chenzhihao.serviceutil.dto.LoginDto;
 
-import com.chenzhihao.serviceutil.dto.RegisterDto;
+import com.chenzhihao.serviceuser.dto.LoginDto;
+import com.chenzhihao.serviceuser.dto.RegisterDto;
 import com.chenzhihao.serviceuser.service.UsersService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

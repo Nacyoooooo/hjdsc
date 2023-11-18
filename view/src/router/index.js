@@ -20,6 +20,16 @@ const routes = [
   {
     path: '/play',
     component:()=>import('../views/play/play.vue')
+  },
+  {
+    path: '/admin',
+    component:()=>import('../views/admin/admin.vue'),
+    children:[
+      {
+        path: 'userData',
+        component:()=>import('../views/admin/userData.vue'),
+      }
+    ]
   }
 ]
 

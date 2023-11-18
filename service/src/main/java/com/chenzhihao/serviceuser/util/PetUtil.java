@@ -2,6 +2,7 @@ package com.chenzhihao.serviceuser.util;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.chenzhihao.serviceuser.constant.PlayerType;
 import com.chenzhihao.serviceuser.dto.PlayData;
@@ -13,6 +14,7 @@ import com.chenzhihao.serviceuser.model.Petstore;
 import com.chenzhihao.serviceuser.model.Skills;
 import com.chenzhihao.serviceuser.model.entity.Pet;
 import com.chenzhihao.serviceuser.model.entity.PetSkill;
+import com.chenzhihao.serviceuser.model.entity.Player;
 import com.chenzhihao.serviceuser.result.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -283,6 +285,19 @@ public class PetUtil {
         skills.put(skillid,petSkill);
         pet.setSkills(skills);
         return true;
+    }
+    public Player getPlayer(Integer userId){
+        String myKey=PLAY_STATUS_KEY+userId;
+        Boolean exist = stringRedisTemplate.hasKey(myKey);
+        if(!exist){
+            return null;
+        }
+        String statusJson = stringRedisTemplate.opsForValue().get(myKey);
+        Player myself = JSONUtil.toBean(statusJson, Player.class);
+        if(myself==null){
+            return null;
+        }
+        return myself;
     }
 
 }

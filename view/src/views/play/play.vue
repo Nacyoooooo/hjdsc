@@ -3,6 +3,7 @@ import {onMounted, reactive, ref} from "vue";
 import axios from "axios";
 import router from "@/router";
 import {useUserInfoStore} from "@/store/store";
+import {ElMessage} from "element-plus";
 const player=reactive({
   data:[]
 })
@@ -50,6 +51,9 @@ const useSkill=async(number)=>{
     }
   }).then(res=>{
     console.log(res)
+    if(res.data.code==300){
+      ElMessage.success(res.data.msg)
+    }
   })
 }
 onMounted(async ()=>{
