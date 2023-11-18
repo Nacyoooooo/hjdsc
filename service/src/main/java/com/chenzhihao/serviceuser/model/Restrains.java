@@ -9,51 +9,38 @@ import java.util.Date;
 
 /**
  * 
- * @TableName petpark
+ * @TableName restrains
  */
-@TableName(value ="petpark")
-public class Petpark implements Serializable {
+@TableName(value ="restrains")
+public class Restrains implements Serializable {
     /**
      * 主键
      */
+    @TableId(type = IdType.AUTO)
     private Integer id;
 
     /**
-     * 宠物的编号
+     * 属性名
      */
-    private Integer pid;
+    private String name;
 
     /**
-     * 宠物的数量
+     * 克制的属性
      */
-    private Integer count;
+    private Integer restrainid;
 
     /**
-     * 是否可被捕捉 1是可以 2是不可以
-     */
-    private Integer catched;
-
-    /**
-     * 宠物创建时间
+     * 记录创建时间
      */
     private Date createtime;
 
     /**
-     * 宠物更新时间
+     * 记录更新时间
      */
     private Date updatetime;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
-    private Integer level;
-
-    public Integer getLevel() {
-        return level;
-    }
-
-    public void setLevel(Integer level) {
-        this.level = level;
-    }
 
     /**
      * 主键
@@ -70,70 +57,56 @@ public class Petpark implements Serializable {
     }
 
     /**
-     * 宠物的编号
+     * 属性名
      */
-    public Integer getPid() {
-        return pid;
+    public String getName() {
+        return name;
     }
 
     /**
-     * 宠物的编号
+     * 属性名
      */
-    public void setPid(Integer pid) {
-        this.pid = pid;
+    public void setName(String name) {
+        this.name = name;
     }
 
     /**
-     * 宠物的数量
+     * 克制的属性
      */
-    public Integer getCount() {
-        return count;
+    public Integer getRestrainid() {
+        return restrainid;
     }
 
     /**
-     * 宠物的数量
+     * 克制的属性
      */
-    public void setCount(Integer count) {
-        this.count = count;
+    public void setRestrainid(Integer restrainid) {
+        this.restrainid = restrainid;
     }
 
     /**
-     * 是否可被捕捉 1是可以 2是不可以
-     */
-    public Integer getCatched() {
-        return catched;
-    }
-
-    /**
-     * 是否可被捕捉 1是可以 2是不可以
-     */
-    public void setCatched(Integer catched) {
-        this.catched = catched;
-    }
-
-    /**
-     * 宠物创建时间
+     * 记录创建时间
      */
     public Date getCreatetime() {
         return createtime;
     }
 
     /**
-     * 宠物创建时间
+     * 记录创建时间
      */
     public void setCreatetime(Date createtime) {
         this.createtime = createtime;
     }
 
     /**
-     * 宠物更新时间
+     * 记录更新时间
      */
     public Date getUpdatetime() {
         return updatetime;
     }
 
     /**
-     * 宠物更新时间
+     * 记录更新时间
      */
     public void setUpdatetime(Date updatetime) {
         this.updatetime = updatetime;
@@ -150,11 +123,10 @@ public class Petpark implements Serializable {
         if (getClass() != that.getClass()) {
             return false;
         }
-        Petpark other = (Petpark) that;
+        Restrains other = (Restrains) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-            && (this.getPid() == null ? other.getPid() == null : this.getPid().equals(other.getPid()))
-            && (this.getCount() == null ? other.getCount() == null : this.getCount().equals(other.getCount()))
-            && (this.getCatched() == null ? other.getCatched() == null : this.getCatched().equals(other.getCatched()))
+            && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
+            && (this.getRestrainid() == null ? other.getRestrainid() == null : this.getRestrainid().equals(other.getRestrainid()))
             && (this.getCreatetime() == null ? other.getCreatetime() == null : this.getCreatetime().equals(other.getCreatetime()))
             && (this.getUpdatetime() == null ? other.getUpdatetime() == null : this.getUpdatetime().equals(other.getUpdatetime()));
     }
@@ -164,9 +136,8 @@ public class Petpark implements Serializable {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
-        result = prime * result + ((getPid() == null) ? 0 : getPid().hashCode());
-        result = prime * result + ((getCount() == null) ? 0 : getCount().hashCode());
-        result = prime * result + ((getCatched() == null) ? 0 : getCatched().hashCode());
+        result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
+        result = prime * result + ((getRestrainid() == null) ? 0 : getRestrainid().hashCode());
         result = prime * result + ((getCreatetime() == null) ? 0 : getCreatetime().hashCode());
         result = prime * result + ((getUpdatetime() == null) ? 0 : getUpdatetime().hashCode());
         return result;
@@ -179,9 +150,8 @@ public class Petpark implements Serializable {
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
-        sb.append(", pid=").append(pid);
-        sb.append(", count=").append(count);
-        sb.append(", catched=").append(catched);
+        sb.append(", name=").append(name);
+        sb.append(", restrainid=").append(restrainid);
         sb.append(", createtime=").append(createtime);
         sb.append(", updatetime=").append(updatetime);
         sb.append(", serialVersionUID=").append(serialVersionUID);

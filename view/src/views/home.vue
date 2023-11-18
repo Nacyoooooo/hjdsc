@@ -3,6 +3,7 @@ import axios from "axios";
 import {useUserInfoStore} from "@/store/store";
 import router from "@/router";
 import {reactive, ref} from "vue";
+// import {useWebSocket} from '../hooks'
 const store=useUserInfoStore()
 const petId=ref(0)
 const storePage=ref(1)
@@ -10,7 +11,10 @@ const orderid=ref(1)
 const users=reactive({
   data:[]
 })
-
+// const ws=useWebSocket(handleMessage);
+// function handleMessage(e){
+//
+// }
 const petConfig=reactive({
   name:'',
   description:'',
@@ -150,10 +154,27 @@ const getUserStoreInfo=async ()=>{
     userStore.data=res.data.data
   })
 }
+const op=ref(1)
+const requestfight=async ()=>{
+  await  axios.post('/api/play/requestfight/'+op.value,{},{
+    headers:{
+      "authorization":store.getToken()
+    }
+  }).then(res=>{
+    console.log(res)
+    const data=res.data
+    if(data.code==200){
+      router.push('/play')
+    }
+  })
+}
 </script>
 
 <template>
   <h>helloworld</h>
+  <el-input v-model="op"></el-input>
+  <el-button @click="requestfight">请求对战</el-button>
+  <el-button @click="router.push('/play')">去对战页</el-button>
   <el-button @click="router.push('/userdata')">去用户页</el-button>
   <el-button @click="testToken">测试token是否可被携带</el-button>
   <el-button @click="sign">签到</el-button>

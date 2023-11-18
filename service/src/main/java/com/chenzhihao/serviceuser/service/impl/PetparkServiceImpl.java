@@ -64,6 +64,7 @@ public class PetparkServiceImpl extends ServiceImpl<PetparkMapper, Petpark>
         public void run() {
             String queueName="stream.orders";
             while (true) {
+
                 try {
                     // 1.获取消息队列中的订单信息 XREADGROUP GROUP g1 c1 COUNT 1 BLOCK 2000 STREAMS s1 >
                     List<MapRecord<String, Object, Object>> list = stringRedisTemplate.opsForStream().read(

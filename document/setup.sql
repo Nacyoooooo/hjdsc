@@ -54,18 +54,22 @@ CREATE TABLE `petsConfig` (
                          `secondaryAttribute` INT comment '副属性（可以没有）',
                          `createTime` DATETIME comment '宠物创建时间',
                          `updateTime` DATETIME comment '宠物更新时间',
-                         PRIMARY KEY (`id`)USING BTREE
+                         `level` int comment '等级',
+                             PRIMARY KEY (`id`)USING BTREE
 );
 
 insert into petsConfig (name, description, healthPoint, physicalDamagePoint, magicalDamagePoin,
-                        physicalDefence, magicalDefence, speed, attribute, secondaryAttribute, createTime, updateTime)
-VALUES ('喵喵','是一只猫',82,82,83,80,100,100,1,0,'2023-10-18 09:00:00','2023-10-18 09:00:00');
+                        physicalDefence, magicalDefence, speed, attribute, secondaryAttribute,
+                        createTime, updateTime,level)
+VALUES ('喵喵','是一只猫',82,82,83,80,100,100,1,0,'2023-10-18 09:00:00','2023-10-18 09:00:00',100);
 insert into petsConfig (name, description, healthPoint, physicalDamagePoint, magicalDamagePoin,
-                        physicalDefence, magicalDefence, speed, attribute, secondaryAttribute, createTime, updateTime)
-VALUES ('火花','火元素生物',82,82,83,80,100,100,2,0,'2023-10-18 09:00:00','2023-10-18 09:00:00');
+                        physicalDefence, magicalDefence, speed, attribute, secondaryAttribute,
+                        createTime, updateTime,level)
+VALUES ('火花','火元素生物',82,82,83,80,100,100,2,0,'2023-10-18 09:00:00','2023-10-18 09:00:00',100);
 insert into petsConfig (name, description, healthPoint, physicalDamagePoint, magicalDamagePoin,
-                        physicalDefence, magicalDefence, speed, attribute, secondaryAttribute, createTime, updateTime)
-VALUES ('水蓝蓝','水元素生物',82,82,83,80,100,100,3,0,'2023-10-18 09:00:00','2023-10-18 09:00:00');
+                        physicalDefence, magicalDefence, speed, attribute, secondaryAttribute,
+                        createTime, updateTime,level)
+VALUES ('水蓝蓝','水元素生物',82,82,83,80,100,100,3,0,'2023-10-18 09:00:00','2023-10-18 09:00:00',100);
 -- ----------------------------
 -- Table structure for petPark
 -- 宠物园配置表
@@ -78,10 +82,11 @@ CREATE TABLE `petPark` (
                               `count` int COMMENT '宠物的数量',
                               `catched` int COMMENT '是否可被捕捉 1是可以 2是不可以',
                               `createTime` DATETIME comment '宠物创建时间',
-                              `updateTime` DATETIME comment '宠物更新时间'
+                              `updateTime` DATETIME comment '宠物更新时间',
+                              `level` int comment '捕捉时的初始等级'
 );
-insert into petPark (pid, count, catched, createTime, updateTime,id) VALUES
-(1,100,1,'2023-10-18 09:00:00','2023-10-18 09:00:00',1);
+insert into petPark (pid, count, catched, createTime, updateTime,id,level) VALUES
+(1,100,1,'2023-10-18 09:00:00','2023-10-18 09:00:00',1,10);
 -- ----------------------------
 -- Table structure for captureRecord
 -- 宠物园捕捉记录
@@ -94,8 +99,84 @@ CREATE TABLE `captureRecord` (
                            `uid` int COMMENT '玩家的id',
                            `pid` int COMMENT '宠物的编号',
                            `createTime` DATETIME comment '记录创建时间',
-                           `updateTime` DATETIME comment '记录更新时间'
+                           `updateTime` DATETIME comment '记录更新时间',
+                            `level` int comment '捕捉时的初始等级'
 );
+-- ----------------------------
+-- Table structure for skills
+-- 宠物技能表
+-- ----------------------------
+DROP TABLE IF EXISTS `skills`;
+
+CREATE TABLE `skills` (
+                                 `id` int  auto_increment COMMENT  '主键',
+                                 `name` varchar(100) COMMENT '技能名称',
+                                 `type` int COMMENT '技能类型 1是威力技能 2是变化技能，回血',
+                                 `power` int COMMENT '技能威力 威力技能为正值 变化技能为负值',
+                                 `attribute` int COMMENT '技能的属性',
+                                 `description` varchar(100) COMMENT '技能文本描述',
+                                 `usetimes` int COMMENT '技能使用次数',
+                                 `createTime` DATETIME comment '记录创建时间',
+                                 `updateTime` DATETIME comment '记录更新时间',
+                                 `powertype` int comment '威力技能的伤害类型 1是物理，2是魔法',
+                                 PRIMARY KEY (`id`) USING BTREE
+);
+insert into skills (name, type, power, attribute, description, usetimes, createTime, updateTime,powertype) VALUES
+('抓挠',1,100,1,'造成伤害',40,'2023-10-18 09:00:00','2023-10-18 09:00:00',1);
+insert into skills (name, type, power, attribute, description, usetimes, createTime, updateTime,powertype) VALUES
+    ('水之打击',1,120,2,'造成大量伤害',30,'2023-10-18 09:00:00','2023-10-18 09:00:00',2);
+insert into skills (name, type, power, attribute, description, usetimes, createTime, updateTime,powertype) VALUES
+    ('魔焰瞬击',1,150,3,'造成大量伤害',5,'2023-10-18 09:00:00','2023-10-18 09:00:00',2);
+-- ----------------------------
+-- Table structure for restrains
+-- 宠物属性克制表
+-- ----------------------------
+DROP TABLE IF EXISTS `restrains`;
+
+CREATE TABLE `restrains` (
+                          `id` int  auto_increment COMMENT  '主键',
+                          `name` varchar(10) COMMENT '属性名',
+                          `restrainId` int comment '克制的属性',
+                          `createTime` DATETIME comment '记录创建时间',
+                          `updateTime` DATETIME comment '记录更新时间',
+                          PRIMARY KEY (`id`) USING BTREE
+);
+# 草1 水2 火3 光4 恶魔5
+insert into restrains (name, restrainId, createTime, updateTime) VALUES
+('草',2,'2023-10-18 09:00:00','2023-10-18 09:00:00');
+insert into restrains (name, restrainId, createTime, updateTime) VALUES
+    ('水',3,'2023-10-18 09:00:00','2023-10-18 09:00:00');
+insert into restrains (name, restrainId, createTime, updateTime) VALUES
+    ('火',1,'2023-10-18 09:00:00','2023-10-18 09:00:00');
+insert into restrains (name, restrainId, createTime, updateTime) VALUES
+    ('光',5,'2023-10-18 09:00:00','2023-10-18 09:00:00');
+insert into restrains (name, restrainId, createTime, updateTime) VALUES
+    ('恶魔',4,'2023-10-18 09:00:00','2023-10-18 09:00:00');
+-- ----------------------------
+-- Table structure for resists
+-- 宠物属性抵抗表
+-- ----------------------------
+DROP TABLE IF EXISTS `resists`;
+
+CREATE TABLE `resists` (
+                             `id` int  auto_increment COMMENT  '主键',
+                             `name` varchar(10) COMMENT '属性名',
+                             `resistId` int comment '克制的属性',
+                             `createTime` DATETIME comment '记录创建时间',
+                             `updateTime` DATETIME comment '记录更新时间',
+                             PRIMARY KEY (`id`) USING BTREE
+);
+# 草1 水2 火3 光4 恶魔5
+insert into resists (name, resistId, createTime, updateTime) VALUES
+    ('草',2,'2023-10-18 09:00:00','2023-10-18 09:00:00');
+insert into resists (name, resistId, createTime, updateTime) VALUES
+    ('水',3,'2023-10-18 09:00:00','2023-10-18 09:00:00');
+insert into resists (name, resistId, createTime, updateTime) VALUES
+    ('火',1,'2023-10-18 09:00:00','2023-10-18 09:00:00');
+insert into resists (name, resistId, createTime, updateTime) VALUES
+    ('光',5,'2023-10-18 09:00:00','2023-10-18 09:00:00');
+insert into resists (name, resistId, createTime, updateTime) VALUES
+    ('恶魔',4,'2023-10-18 09:00:00','2023-10-18 09:00:00');
 -- ----------------------------
 -- Table structure for petStore
 -- 用户宠物仓库表
@@ -115,26 +196,22 @@ CREATE TABLE `petStore` (
                               `createTime` DATETIME comment '宠物获取时间',
                               `updateTime` DATETIME comment '宠物更新时间',
                               `performed` int comment '是否上阵 0表示不在背包 1-6或更多表示背包中的位置',
+                              `skillone` int comment '首格技能 0代表没有',
+                              `skilltwo` int comment '第二格技能',
+                              `skillthree` int comment '第三格技能',
+                              `skillfour` int comment '第四格技能',
+                              `level` int comment '等级',
                               PRIMARY KEY (`id`)USING BTREE
 );
 insert into petStore (pid, uid, healthPoint, physicalDamagePoint, magicalDamagePoin, physicalDefence,
-                      magicalDefence, speed, createTime, updateTime,performed) VALUES
-(1,1,1,1,1,1,1,1,'2023-10-18 09:00:00','2023-10-18 09:00:00',1);
+                      magicalDefence, speed, createTime, updateTime,performed,skillone,skilltwo,skillthree,skillfour,level) VALUES
+(1,1,1,1,1,1,1,1,'2023-10-18 09:00:00','2023-10-18 09:00:00',1,1,0,0,0,100);
 insert into petStore (pid, uid, healthPoint, physicalDamagePoint, magicalDamagePoin, physicalDefence,
-                      magicalDefence, speed, createTime, updateTime,performed) VALUES
-    (2,1,1,1,1,1,1,1,'2023-10-18 09:00:00','2023-10-18 09:00:00',2);
+                      magicalDefence, speed, createTime, updateTime,performed,skillone,skilltwo,skillthree,skillfour,level) VALUES
+    (2,1,1,1,1,1,1,1,'2023-10-18 09:00:00','2023-10-18 09:00:00',2,1,0,0,0,100);
 insert into petStore (pid, uid, healthPoint, physicalDamagePoint, magicalDamagePoin, physicalDefence,
-                      magicalDefence, speed, createTime, updateTime,performed) VALUES
-    (3,1,1,1,1,1,1,1,'2023-10-18 09:00:00','2023-10-18 09:00:00',0);
-insert into petStore (pid, uid, healthPoint, physicalDamagePoint, magicalDamagePoin, physicalDefence,
-                      magicalDefence, speed, createTime, updateTime,performed) VALUES
-    (3,1,1,1,1,1,1,1,'2023-10-18 09:00:00','2023-10-18 09:00:00',0);
-insert into petStore (pid, uid, healthPoint, physicalDamagePoint, magicalDamagePoin, physicalDefence,
-                      magicalDefence, speed, createTime, updateTime,performed) VALUES
-    (3,1,1,1,1,1,1,1,'2023-10-18 09:00:00','2023-10-18 09:00:00',0);
-insert into petStore (pid, uid, healthPoint, physicalDamagePoint, magicalDamagePoin, physicalDefence,
-                      magicalDefence, speed, createTime, updateTime,performed) VALUES
-    (3,1,1,1,1,1,1,1,'2023-10-18 09:00:00','2023-10-18 09:00:00',0);
+                      magicalDefence, speed, createTime, updateTime,performed,skillone,skilltwo,skillthree,skillfour,level) VALUES
+    (3,1,1,1,1,1,1,1,'2023-10-18 09:00:00','2023-10-18 09:00:00',0,2,0,0,0,100);
 -- ----------------------------
 -- Table structure for signs
 -- 用户签到信息记录表

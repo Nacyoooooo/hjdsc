@@ -20,6 +20,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.chenzhihao.serviceuser.constant.RedisConstants.PETS_BAG_KEY;
+
 
 /**
  * @author 86159
@@ -40,7 +42,7 @@ public class PetstoreServiceImpl extends ServiceImpl<PetstoreMapper, Petstore>
             return Result.fail();
         }
         Long uid = user.getId();
-        String key="pets:bag:"+uid;
+        String key=PETS_BAG_KEY+uid;
         Boolean existKey = stringRedisTemplate.hasKey(key);
         //如果redis中存在这个key，则直接从redis中读取
         if(existKey){

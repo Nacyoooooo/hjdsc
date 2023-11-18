@@ -79,6 +79,11 @@ public class Petsconfig implements Serializable {
      */
     private Date updatetime;
 
+    /**
+     * 等级
+     */
+    private Integer level;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 
@@ -264,6 +269,20 @@ public class Petsconfig implements Serializable {
         this.updatetime = updatetime;
     }
 
+    /**
+     * 等级
+     */
+    public Integer getLevel() {
+        return level;
+    }
+
+    /**
+     * 等级
+     */
+    public void setLevel(Integer level) {
+        this.level = level;
+    }
+
     @Override
     public boolean equals(Object that) {
         if (this == that) {
@@ -288,7 +307,8 @@ public class Petsconfig implements Serializable {
             && (this.getAttribute() == null ? other.getAttribute() == null : this.getAttribute().equals(other.getAttribute()))
             && (this.getSecondaryattribute() == null ? other.getSecondaryattribute() == null : this.getSecondaryattribute().equals(other.getSecondaryattribute()))
             && (this.getCreatetime() == null ? other.getCreatetime() == null : this.getCreatetime().equals(other.getCreatetime()))
-            && (this.getUpdatetime() == null ? other.getUpdatetime() == null : this.getUpdatetime().equals(other.getUpdatetime()));
+            && (this.getUpdatetime() == null ? other.getUpdatetime() == null : this.getUpdatetime().equals(other.getUpdatetime()))
+            && (this.getLevel() == null ? other.getLevel() == null : this.getLevel().equals(other.getLevel()));
     }
 
     @Override
@@ -308,6 +328,7 @@ public class Petsconfig implements Serializable {
         result = prime * result + ((getSecondaryattribute() == null) ? 0 : getSecondaryattribute().hashCode());
         result = prime * result + ((getCreatetime() == null) ? 0 : getCreatetime().hashCode());
         result = prime * result + ((getUpdatetime() == null) ? 0 : getUpdatetime().hashCode());
+        result = prime * result + ((getLevel() == null) ? 0 : getLevel().hashCode());
         return result;
     }
 
@@ -330,6 +351,7 @@ public class Petsconfig implements Serializable {
         sb.append(", secondaryattribute=").append(secondaryattribute);
         sb.append(", createtime=").append(createtime);
         sb.append(", updatetime=").append(updatetime);
+        sb.append(", level=").append(level);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

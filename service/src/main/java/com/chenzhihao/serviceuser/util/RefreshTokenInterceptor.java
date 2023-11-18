@@ -27,7 +27,6 @@ public class RefreshTokenInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        log.info("前置拦截，检查token");
         // 1.获取请求头中的token
         String token = request.getHeader("authorization");
         //如果是空的就放行，让它去登录
@@ -45,7 +44,6 @@ public class RefreshTokenInterceptor implements HandlerInterceptor {
         else {
             key=LOGIN_USER_KEY+userAuthority;
         }
-        log.info("key="+key);
         //从redis中找用户，如果没有，则放行，让它去登录
         Map<Object, Object> entries = stringRedisTemplate.opsForHash().entries(key);
         if(entries==null||entries.isEmpty()){

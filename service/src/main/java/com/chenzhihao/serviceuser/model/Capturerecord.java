@@ -42,6 +42,15 @@ public class Capturerecord implements Serializable {
      * 记录更新时间
      */
     private Date updatetime;
+    private Integer level;
+
+    public Integer getLevel() {
+        return level;
+    }
+
+    public void setLevel(Integer level) {
+        this.level = level;
+    }
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

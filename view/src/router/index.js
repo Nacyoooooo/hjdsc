@@ -16,6 +16,10 @@ const routes = [
   {
     path: '/userdata',
     component:()=>import('../views/userdata.vue')
+  },
+  {
+    path: '/play',
+    component:()=>import('../views/play/play.vue')
   }
 ]
 

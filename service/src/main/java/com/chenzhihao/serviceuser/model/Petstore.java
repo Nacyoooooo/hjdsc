@@ -68,15 +68,36 @@ public class Petstore implements Serializable {
      * 宠物更新时间
      */
     private Date updatetime;
+
+    /**
+     * 是否上阵 0表示不在背包 1-6或更多表示背包中的位置
+     */
     private Integer performed;
 
-    public Integer getPerformed() {
-        return performed;
-    }
+    /**
+     * 首格技能 0代表没有
+     */
+    private Integer skillone;
 
-    public void setPerformed(Integer performed) {
-        this.performed = performed;
-    }
+    /**
+     * 第二格技能
+     */
+    private Integer skilltwo;
+
+    /**
+     * 第三格技能
+     */
+    private Integer skillthree;
+
+    /**
+     * 第四格技能
+     */
+    private Integer skillfour;
+
+    /**
+     * 等级
+     */
+    private Integer level;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
@@ -235,6 +256,90 @@ public class Petstore implements Serializable {
         this.updatetime = updatetime;
     }
 
+    /**
+     * 是否上阵 0表示不在背包 1-6或更多表示背包中的位置
+     */
+    public Integer getPerformed() {
+        return performed;
+    }
+
+    /**
+     * 是否上阵 0表示不在背包 1-6或更多表示背包中的位置
+     */
+    public void setPerformed(Integer performed) {
+        this.performed = performed;
+    }
+
+    /**
+     * 首格技能 0代表没有
+     */
+    public Integer getSkillone() {
+        return skillone;
+    }
+
+    /**
+     * 首格技能 0代表没有
+     */
+    public void setSkillone(Integer skillone) {
+        this.skillone = skillone;
+    }
+
+    /**
+     * 第二格技能
+     */
+    public Integer getSkilltwo() {
+        return skilltwo;
+    }
+
+    /**
+     * 第二格技能
+     */
+    public void setSkilltwo(Integer skilltwo) {
+        this.skilltwo = skilltwo;
+    }
+
+    /**
+     * 第三格技能
+     */
+    public Integer getSkillthree() {
+        return skillthree;
+    }
+
+    /**
+     * 第三格技能
+     */
+    public void setSkillthree(Integer skillthree) {
+        this.skillthree = skillthree;
+    }
+
+    /**
+     * 第四格技能
+     */
+    public Integer getSkillfour() {
+        return skillfour;
+    }
+
+    /**
+     * 第四格技能
+     */
+    public void setSkillfour(Integer skillfour) {
+        this.skillfour = skillfour;
+    }
+
+    /**
+     * 等级
+     */
+    public Integer getLevel() {
+        return level;
+    }
+
+    /**
+     * 等级
+     */
+    public void setLevel(Integer level) {
+        this.level = level;
+    }
+
     @Override
     public boolean equals(Object that) {
         if (this == that) {
@@ -257,7 +362,13 @@ public class Petstore implements Serializable {
             && (this.getMagicaldefence() == null ? other.getMagicaldefence() == null : this.getMagicaldefence().equals(other.getMagicaldefence()))
             && (this.getSpeed() == null ? other.getSpeed() == null : this.getSpeed().equals(other.getSpeed()))
             && (this.getCreatetime() == null ? other.getCreatetime() == null : this.getCreatetime().equals(other.getCreatetime()))
-            && (this.getUpdatetime() == null ? other.getUpdatetime() == null : this.getUpdatetime().equals(other.getUpdatetime()));
+            && (this.getUpdatetime() == null ? other.getUpdatetime() == null : this.getUpdatetime().equals(other.getUpdatetime()))
+            && (this.getPerformed() == null ? other.getPerformed() == null : this.getPerformed().equals(other.getPerformed()))
+            && (this.getSkillone() == null ? other.getSkillone() == null : this.getSkillone().equals(other.getSkillone()))
+            && (this.getSkilltwo() == null ? other.getSkilltwo() == null : this.getSkilltwo().equals(other.getSkilltwo()))
+            && (this.getSkillthree() == null ? other.getSkillthree() == null : this.getSkillthree().equals(other.getSkillthree()))
+            && (this.getSkillfour() == null ? other.getSkillfour() == null : this.getSkillfour().equals(other.getSkillfour()))
+            && (this.getLevel() == null ? other.getLevel() == null : this.getLevel().equals(other.getLevel()));
     }
 
     @Override
@@ -275,6 +386,12 @@ public class Petstore implements Serializable {
         result = prime * result + ((getSpeed() == null) ? 0 : getSpeed().hashCode());
         result = prime * result + ((getCreatetime() == null) ? 0 : getCreatetime().hashCode());
         result = prime * result + ((getUpdatetime() == null) ? 0 : getUpdatetime().hashCode());
+        result = prime * result + ((getPerformed() == null) ? 0 : getPerformed().hashCode());
+        result = prime * result + ((getSkillone() == null) ? 0 : getSkillone().hashCode());
+        result = prime * result + ((getSkilltwo() == null) ? 0 : getSkilltwo().hashCode());
+        result = prime * result + ((getSkillthree() == null) ? 0 : getSkillthree().hashCode());
+        result = prime * result + ((getSkillfour() == null) ? 0 : getSkillfour().hashCode());
+        result = prime * result + ((getLevel() == null) ? 0 : getLevel().hashCode());
         return result;
     }
 
@@ -295,6 +412,12 @@ public class Petstore implements Serializable {
         sb.append(", speed=").append(speed);
         sb.append(", createtime=").append(createtime);
         sb.append(", updatetime=").append(updatetime);
+        sb.append(", performed=").append(performed);
+        sb.append(", skillone=").append(skillone);
+        sb.append(", skilltwo=").append(skilltwo);
+        sb.append(", skillthree=").append(skillthree);
+        sb.append(", skillfour=").append(skillfour);
+        sb.append(", level=").append(level);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();
