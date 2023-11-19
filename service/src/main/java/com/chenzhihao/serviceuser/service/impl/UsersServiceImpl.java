@@ -147,7 +147,7 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users>
         if(null==user){
             return Result.fail();
         }
-        Long id = user.getId();
+        Integer id = user.getId();
         LocalDateTime now = LocalDateTime.now();
         String keySuffix = now.format(DateTimeFormatter.ofPattern(":yyyyMM"));
         String key="sign:"+id+keySuffix;
@@ -169,7 +169,7 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users>
         if(null==user){
             return Result.fail();
         }
-        Long id = user.getId();
+        Integer id = user.getId();
         LocalDateTime now = LocalDateTime.now();
         String keySuffix = now.format(DateTimeFormatter.ofPattern(":yyyyMM"));
         String key="sign:"+id+keySuffix;

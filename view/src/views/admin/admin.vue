@@ -19,36 +19,24 @@
             <el-sub-menu >
               <template #title
               ><el-icon><document></document></el-icon
-              ><span>申请</span></template
+              ><span>游戏内容管理</span></template
               >
               <el-menu-item-group>
-                <el-menu-item index="/end/poorview">贫困等级申请</el-menu-item>
+                <el-menu-item index="/admin/petConfig">宠物配置</el-menu-item>
+                <el-menu-item index="/admin/petSkills">宠物技能</el-menu-item>
 
               </el-menu-item-group>
             </el-sub-menu>
 
-            <el-sub-menu ><template #title>
-              <el-icon><location /></el-icon>
-              <span>审核</span>
-            </template>
-              <el-menu-item-group title="审核" >
-                <el-menu-item index="/end/LoanReview"
-                >助学贷款审核</el-menu-item
-                >
-              </el-menu-item-group>
-            </el-sub-menu>
+            <el-menu-item index="/admin/petPark">
+              <el-icon><icon-menu /></el-icon>
+              <span>宠物池管理</span>
+            </el-menu-item>
 
-            <el-sub-menu >
-              <template #title>
-                <el-icon><location /></el-icon>
-                <span>前端管理</span>
-              </template>
-              <el-menu-item-group title="资源页">
-                <el-menu-item index="/end/homePageController"
-                >首页管理</el-menu-item
-                >
-              </el-menu-item-group>
-            </el-sub-menu>
+            <el-menu-item index="/admin/notice">
+              <el-icon><icon-menu /></el-icon>
+              <span>公告管理</span>
+            </el-menu-item>
             <el-menu-item index="/end/admin">
               <el-icon><setting /></el-icon>
               <template #title>管理</template>

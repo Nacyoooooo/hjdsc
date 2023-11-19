@@ -15,12 +15,13 @@
             <result property="status" column="status" jdbcType="INTEGER"/>
             <result property="createtime" column="createTime" jdbcType="TIMESTAMP"/>
             <result property="updatetime" column="updateTime" jdbcType="TIMESTAMP"/>
+            <result property="authority" column="authority" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,name,password,
         phoneNumber,email,url,
         gender,status,createTime,
-        updateTime
+        updateTime,authority
     </sql>
 </mapper>

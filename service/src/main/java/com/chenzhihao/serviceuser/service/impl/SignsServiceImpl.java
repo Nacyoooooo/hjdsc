@@ -4,9 +4,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import com.chenzhihao.serviceuser.mapper.SignsMapper;
+import com.chenzhihao.serviceuser.model.Users;
 import com.chenzhihao.serviceuser.service.SignsService;
 import com.chenzhihao.serviceuser.model.Signs;
-import com.chenzhihao.serviceuser.model.Users;
 import com.chenzhihao.serviceuser.result.Result;
 import com.chenzhihao.serviceuser.util.UserHolder;
 import com.chenzhihao.serviceuser.util.UserUtil;
@@ -48,7 +48,7 @@ public class SignsServiceImpl extends ServiceImpl<SignsMapper, Signs>
             return Result.fail();
         }
 
-        Long id = user.getId();
+        Integer id = user.getId();
         LocalDateTime now = LocalDateTime.now();
         String keySuffix = now.format(DateTimeFormatter.ofPattern(":yyyyMM"));
         String key="sign:"+id+keySuffix;
@@ -161,7 +161,7 @@ public class SignsServiceImpl extends ServiceImpl<SignsMapper, Signs>
         if(null==user){
             return Result.fail();
         }
-        Long id = user.getId();
+        Integer id = user.getId();
         LocalDateTime now = LocalDateTime.now();
         String keySuffix = now.format(DateTimeFormatter.ofPattern(":yyyyMM"));
         String key="sign:"+id+keySuffix;

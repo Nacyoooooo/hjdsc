@@ -230,3 +230,19 @@ CREATE TABLE `signs` (
 );
 insert into signs (uid, signYear, signMonth, signData, createTime, updateTime) VALUES
 (1,2023,11,3524,'2023-10-18 09:00:00','2023-10-18 09:00:00');
+-- ----------------------------
+-- Table structure for signs
+-- 公告信息记录表
+-- ----------------------------
+DROP TABLE IF EXISTS `notice`;
+
+CREATE TABLE `notice` (
+                         `id` int auto_increment COMMENT  '主键,宠物的编号',
+                         `uid` int COMMENT '发布者id',
+                         `content` varchar(1000) COMMENT '签到的年份',
+                         `createTime` DATETIME comment '签到数据创建时间',
+                         `updateTime` DATETIME comment '签到数据更新时间',
+                         PRIMARY KEY (`id`)USING BTREE
+);
+insert into notice (uid, content, createTime, updateTime) VALUES
+(1,'这是一条测试数据','2023-10-18 09:00:00','2023-10-18 09:00:00');

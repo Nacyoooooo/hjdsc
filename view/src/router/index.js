@@ -28,6 +28,25 @@ const routes = [
       {
         path: 'userData',
         component:()=>import('../views/admin/userData.vue'),
+      },
+      {
+        path: 'petConfig',
+        component:()=>import('../views/admin/petConfig.vue'),
+      }
+      ,
+      {
+        path: 'petSkills',
+        component:()=>import('../views/admin/petSkills.vue'),
+      }
+      ,
+      {
+        path: 'petPark',
+        component:()=>import('../views/admin/petPark.vue'),
+      }
+      ,
+      {
+        path: 'notice',
+        component:()=>import('../views/admin/notice.vue'),
       }
     ]
   }

@@ -16,9 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import static com.chenzhihao.serviceuser.constant.RedisConstants.PETS_CONFIG_KEY;
@@ -117,6 +115,39 @@ public class PetsconfigServiceImpl extends ServiceImpl<PetsconfigMapper, Petscon
         return Result.fail();
     }
 
+    @Override
+    public Result<?> getPetConfigs(Integer pageId) {
+        //从redis中查找
+        String pattern=PETS_CONFIG_KEY+"*";
+        Set<String> keys = stringRedisTemplate.keys(pattern);
+        //没有从数据库中找
+        if(keys==null||keys.isEmpty()){
+            List<Petsconfig> list = list();
+            list.forEach(l->{
+                String key=PETS_CONFIG_KEY+l.getId();
+                Map<String, Object> stringObjectMap = BeanUtil.beanToMap(l, new HashMap<>(),
+                        CopyOptions.create()
+                                .setIgnoreNullValue(true)
+                                .setIgnoreError(true)
+                                .setFieldValueEditor((fieldName, fieldValue) -> {
+                                            if(fieldValue==null){
+                                                return null;
+                                            }
+                                            return fieldValue.toString() ;
+                                        }
+                                ));
+                stringRedisTemplate.opsForHash().putAll(key,stringObjectMap);
+            });
+        }
+        //挂载到redis上
+        List<Petsconfig>petsconfigs=new ArrayList<>();
+        keys.forEach(key->{
+            Map<Object, Object> entries = stringRedisTemplate.opsForHash().entries(key);
+            Petsconfig petsconfig = BeanUtil.fillBeanWithMap(entries, new Petsconfig(), false);
+            petsconfigs.add(petsconfig);
+        });
+        return Result.ok(petsconfigs);
+    }
 
 
 }

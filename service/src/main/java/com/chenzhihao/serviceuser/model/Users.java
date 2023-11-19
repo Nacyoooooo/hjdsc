@@ -1,20 +1,11 @@
 package com.chenzhihao.serviceuser.model;
 
-
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.chenzhihao.serviceuser.annotation.AutoFill;
-
 import java.io.Serializable;
 import java.util.Date;
-
-import static com.chenzhihao.serviceuser.constant.FillPeriod.SAVE;
-import static com.chenzhihao.serviceuser.constant.FillPeriod.UPDATE;
-import static com.chenzhihao.serviceuser.constant.FillType.ENCRYPT;
-import static com.chenzhihao.serviceuser.constant.FillType.TIME;
-
 
 /**
  * 
@@ -26,7 +17,7 @@ public class Users implements Serializable {
      * 主键，统一账号
      */
     @TableId(type = IdType.AUTO)
-    private Long id;
+    private Integer id;
 
     /**
      * 姓名
@@ -36,7 +27,6 @@ public class Users implements Serializable {
     /**
      * 密码
      */
-    @AutoFill(type = ENCRYPT)
     private String password;
 
     /**
@@ -63,27 +53,21 @@ public class Users implements Serializable {
      * 账号状态 1是正常 2是异常
      */
     private Integer status;
-    private Integer authority;
-
-    public Integer getAuthority() {
-        return authority;
-    }
-
-    public void setAuthority(Integer authority) {
-        this.authority = authority;
-    }
 
     /**
      * 账号创建时间
      */
-    @AutoFill(type = TIME,period = SAVE)
     private Date createtime;
 
     /**
      * 账号更新时间
      */
-    @AutoFill(type = TIME,period = UPDATE)
     private Date updatetime;
+
+    /**
+     * 权限等级
+     */
+    private Integer authority;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
@@ -91,14 +75,14 @@ public class Users implements Serializable {
     /**
      * 主键，统一账号
      */
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
     /**
      * 主键，统一账号
      */
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -228,6 +212,20 @@ public class Users implements Serializable {
         this.updatetime = updatetime;
     }
 
+    /**
+     * 权限等级
+     */
+    public Integer getAuthority() {
+        return authority;
+    }
+
+    /**
+     * 权限等级
+     */
+    public void setAuthority(Integer authority) {
+        this.authority = authority;
+    }
+
     @Override
     public boolean equals(Object that) {
         if (this == that) {
@@ -249,7 +247,8 @@ public class Users implements Serializable {
             && (this.getGender() == null ? other.getGender() == null : this.getGender().equals(other.getGender()))
             && (this.getStatus() == null ? other.getStatus() == null : this.getStatus().equals(other.getStatus()))
             && (this.getCreatetime() == null ? other.getCreatetime() == null : this.getCreatetime().equals(other.getCreatetime()))
-            && (this.getUpdatetime() == null ? other.getUpdatetime() == null : this.getUpdatetime().equals(other.getUpdatetime()));
+            && (this.getUpdatetime() == null ? other.getUpdatetime() == null : this.getUpdatetime().equals(other.getUpdatetime()))
+            && (this.getAuthority() == null ? other.getAuthority() == null : this.getAuthority().equals(other.getAuthority()));
     }
 
     @Override
@@ -266,6 +265,7 @@ public class Users implements Serializable {
         result = prime * result + ((getStatus() == null) ? 0 : getStatus().hashCode());
         result = prime * result + ((getCreatetime() == null) ? 0 : getCreatetime().hashCode());
         result = prime * result + ((getUpdatetime() == null) ? 0 : getUpdatetime().hashCode());
+        result = prime * result + ((getAuthority() == null) ? 0 : getAuthority().hashCode());
         return result;
     }
 
@@ -285,6 +285,7 @@ public class Users implements Serializable {
         sb.append(", status=").append(status);
         sb.append(", createtime=").append(createtime);
         sb.append(", updatetime=").append(updatetime);
+        sb.append(", authority=").append(authority);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

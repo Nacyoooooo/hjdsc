@@ -5,4 +5,6 @@ public class UserCode {
     public static final Integer NORMAL=1;
     //用户异常
     public static final Integer NOT_NORMAL=2;
+    public static final Integer ADMIN=1;
+    public static final Integer USER=2;
 }

@@ -2,10 +2,7 @@ package com.chenzhihao.serviceuser.controller;
 
 import com.chenzhihao.serviceuser.model.Petsconfig;
 import com.chenzhihao.serviceuser.result.Result;
-import com.chenzhihao.serviceuser.service.PetparkService;
-import com.chenzhihao.serviceuser.service.PetsconfigService;
-import com.chenzhihao.serviceuser.service.PetstoreService;
-import com.chenzhihao.serviceuser.service.UsersService;
+import com.chenzhihao.serviceuser.service.*;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +21,10 @@ public class AdminController {
     private PetparkService petparkService;
     @Autowired
     private PetstoreService petstoreService;
+    @Autowired
+    private SkillsService skillsService;
+    @Autowired
+    private NoticeService noticeService;
     @PostMapping("getUserInfo")
     @ResponseBody
     public Result<?> getUserInfo(){
@@ -74,5 +75,25 @@ public class AdminController {
     @ResponseBody
     public Result<?> getUserCount(){
         return usersService.getUserCount();
+    }
+    @PostMapping("/getPetConfig/{pageId}")
+    @ResponseBody
+    public Result<?> getPetConfig(@PathVariable Integer pageId){
+        return petsconfigService.getPetConfigs(pageId);
+    }
+    @PostMapping("/getPetSkills/{pageId}")
+    @ResponseBody
+    public Result<?> getPetSkills(@PathVariable Integer pageId){
+        return skillsService.getPetSkills(pageId);
+    }
+    @PostMapping("/getPetPark/{pageId}")
+    @ResponseBody
+    public Result<?> getPetPark(@PathVariable Integer pageId){
+        return petparkService.getPetPark(pageId);
+    }
+    @PostMapping("/getComments")
+    @ResponseBody
+    public Result<?> getComments(){
+        return noticeService.getComments();
     }
 }

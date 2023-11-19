@@ -1,7 +1,7 @@
 package com.chenzhihao.serviceuser.mapper;
 
-import com.chenzhihao.serviceuser.model.Users;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.chenzhihao.serviceuser.model.Users;
 import org.apache.ibatis.annotations.Mapper;
 
 /**

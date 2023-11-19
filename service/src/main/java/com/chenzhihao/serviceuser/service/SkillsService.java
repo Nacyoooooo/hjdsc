@@ -2,6 +2,7 @@ package com.chenzhihao.serviceuser.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.chenzhihao.serviceuser.model.Skills;
+import com.chenzhihao.serviceuser.result.Result;
 
 /**
 * @author 86159
@@ -10,4 +11,5 @@ import com.chenzhihao.serviceuser.model.Skills;
 */
 public interface SkillsService extends IService<Skills> {
 
+    Result<?> getPetSkills(Integer pageId);
 }

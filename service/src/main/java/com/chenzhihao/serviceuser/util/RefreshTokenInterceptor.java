@@ -35,8 +35,8 @@ public class RefreshTokenInterceptor implements HandlerInterceptor {
             return true;
         }
         //如果不为空，就去解析token，获取用户id
-        Long userId = JwtHelper.getUserId(token);
-        Long userAuthority = JwtHelper.getUserAuthority(token);
+        Integer userId = JwtHelper.getUserId(token);
+        Integer userAuthority = JwtHelper.getUserAuthority(token);
         String key;
         if(userAuthority.equals(1)){
             key= LOGIN_ADMIN_KEY+userId;

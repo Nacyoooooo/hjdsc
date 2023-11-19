@@ -1,11 +1,7 @@
 package com.chenzhihao.serviceuser.service.impl;
 
-import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.chenzhihao.serviceuser.constant.PlayerType;
-import com.chenzhihao.serviceuser.constant.ResistType;
-import com.chenzhihao.serviceuser.constant.SkillType;
 import com.chenzhihao.serviceuser.dto.PlayAreaDto;
 import com.chenzhihao.serviceuser.mapper.PetsconfigMapper;
 import com.chenzhihao.serviceuser.mapper.PetstoreMapper;
@@ -14,11 +10,9 @@ import com.chenzhihao.serviceuser.model.Petstore;
 import com.chenzhihao.serviceuser.model.Users;
 import com.chenzhihao.serviceuser.model.entity.FightArea;
 import com.chenzhihao.serviceuser.model.entity.Pet;
-import com.chenzhihao.serviceuser.model.entity.PetSkill;
 import com.chenzhihao.serviceuser.model.entity.Player;
 import com.chenzhihao.serviceuser.result.Result;
 import com.chenzhihao.serviceuser.service.PlayService;
-import com.chenzhihao.serviceuser.util.MathUtil;
 import com.chenzhihao.serviceuser.util.PetUtil;
 import com.chenzhihao.serviceuser.util.RedisIdWorker;
 import com.chenzhihao.serviceuser.util.UserHolder;
@@ -27,19 +21,12 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static com.chenzhihao.serviceuser.constant.PlayerType.PLAYER;
 import static com.chenzhihao.serviceuser.constant.PlayerType.ROBOT;
-import static com.chenzhihao.serviceuser.constant.PowerType.PHYSICAL;
 import static com.chenzhihao.serviceuser.constant.RedisConstants.*;
-import static com.chenzhihao.serviceuser.constant.ResistType.COMMON;
-import static com.chenzhihao.serviceuser.constant.SkillType.CHANGE;
-import static com.chenzhihao.serviceuser.constant.SkillType.POWER;
 
 @Service
 public class PlayServiceImpl implements PlayService {

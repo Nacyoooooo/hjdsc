@@ -41,7 +41,7 @@ public class PetstoreServiceImpl extends ServiceImpl<PetstoreMapper, Petstore>
         if(user==null){
             return Result.fail();
         }
-        Long uid = user.getId();
+        Integer uid = user.getId();
         String key=PETS_BAG_KEY+uid;
         Boolean existKey = stringRedisTemplate.hasKey(key);
         //如果redis中存在这个key，则直接从redis中读取
@@ -89,7 +89,7 @@ public class PetstoreServiceImpl extends ServiceImpl<PetstoreMapper, Petstore>
         if(user==null){
             return Result.fail();
         }
-        Long uid = user.getId();
+        Integer uid = user.getId();
         String key="pets:store:"+uid;
         Boolean existKey = stringRedisTemplate.hasKey(key);
         //如果redis中存在这个key，则直接从redis中读取
@@ -145,7 +145,7 @@ public class PetstoreServiceImpl extends ServiceImpl<PetstoreMapper, Petstore>
         if(user==null){
             return Result.fail();
         }
-        Long uid = user.getId();
+        Integer uid = user.getId();
         String key="pets:bag:"+uid;
         Boolean existKey = stringRedisTemplate.hasKey(key);
         //如果存在,则直接更改顺序

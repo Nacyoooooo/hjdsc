@@ -11,7 +11,7 @@ public class JwtHelper {
     private static String tokenSignKey = "hjdsc";
 
     //根据userId+userName生成token字符串
-    public static String createToken(Long userId,Long authority) throws JwtException{
+    public static String createToken(Integer userId,Long authority) throws JwtException{
         String token = Jwts.builder()
                 .setSubject("hjdsc-USER")
 
@@ -26,21 +26,21 @@ public class JwtHelper {
         return token;
     }
 
-    public static Long getUserId(String token) throws JwtException{
+    public static Integer getUserId(String token) throws JwtException{
         if(StringUtils.isEmpty(token)) return null;
         Jws<Claims> claimsJws = Jwts.parser().setSigningKey(tokenSignKey).parseClaimsJws(token);
 
         Claims claims = claimsJws.getBody();
         Integer userId = (Integer)claims.get("userId");
-        return userId.longValue();
+        return userId;
     }
-    public static Long getUserAuthority(String token) throws JwtException{
+    public static Integer getUserAuthority(String token) throws JwtException{
         if(StringUtils.isEmpty(token)) return null;
         Jws<Claims> claimsJws = Jwts.parser().setSigningKey(tokenSignKey).parseClaimsJws(token);
 
         Claims claims = claimsJws.getBody();
         Integer authority = (Integer)claims.get("authority");
-        return authority.longValue();
+        return authority;
     }
 
     public static String getUserName(String token) throws JwtException{

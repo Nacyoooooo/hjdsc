@@ -9,10 +9,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.chenzhihao.serviceuser.mapper.CapturerecordMapper;
 import com.chenzhihao.serviceuser.mapper.PetparkMapper;
 import com.chenzhihao.serviceuser.mapper.PetsconfigMapper;
-import com.chenzhihao.serviceuser.model.Capturerecord;
-import com.chenzhihao.serviceuser.model.Petpark;
-import com.chenzhihao.serviceuser.model.Petsconfig;
-import com.chenzhihao.serviceuser.model.Users;
+import com.chenzhihao.serviceuser.model.*;
 import com.chenzhihao.serviceuser.result.Result;
 import com.chenzhihao.serviceuser.service.PetparkService;
 
@@ -29,11 +26,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import java.time.Duration;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.*;
+
+import static com.chenzhihao.serviceuser.constant.RedisConstants.*;
+import static com.chenzhihao.serviceuser.constant.RedisConstants.PLAY_SKILL_KEY;
 
 
 /**
@@ -63,6 +60,11 @@ public class PetparkServiceImpl extends ServiceImpl<PetparkMapper, Petpark>
         @Override
         public void run() {
             String queueName="stream.orders";
+            Boolean exist = stringRedisTemplate.hasKey(queueName);
+            if(!exist){
+                stringRedisTemplate.opsForStream().createGroup(queueName,"g1");
+            }
+
             while (true) {
 
                 try {
@@ -156,8 +158,8 @@ public class PetparkServiceImpl extends ServiceImpl<PetparkMapper, Petpark>
     @Override
     public Result<?> getPet(Long parkid) {
         //先判断redis中是否存在
-        String key="caputered:stock:"+parkid;
-        String key2="caputered:order:"+parkid;
+        String key=PET_PARK_CAPTURED+parkid;
+        String key2=PET_PARK_ORDER+parkid;
         Boolean exist = stringRedisTemplate.hasKey(key);
         Boolean exist2 = stringRedisTemplate.hasKey(key2);
         //不存在则从数据库中读取
@@ -177,7 +179,7 @@ public class PetparkServiceImpl extends ServiceImpl<PetparkMapper, Petpark>
             }
         }
         long order = redisIdWorker.nextId("order");
-        Long userId = UserHolder.getUser().getId();
+        Integer userId = UserHolder.getUser().getId();
         Long result = stringRedisTemplate.execute(
                 SECKILL_SCRIPT,
                 Collections.emptyList(),
@@ -267,6 +269,42 @@ public class PetparkServiceImpl extends ServiceImpl<PetparkMapper, Petpark>
             return Result.fail();
         }
         return Result.ok();
+    }
+    private static Integer number=0;
+    @Override
+    public Result<?> getPetPark(Integer pageId) {
+        //从redis中查找
+        String pattern=PET_PARK_KEY+"*";
+        Set<String> keys = stringRedisTemplate.keys(pattern);
+        //没有从数据库中找
+        if(keys==null||keys.isEmpty()||number<=keys.size()){
+            number=keys.size();
+            List<Petpark> list = list();
+            list.forEach(l->{
+                String key=PET_PARK_KEY+l.getId();
+                Map<String, Object> stringObjectMap = BeanUtil.beanToMap(l, new HashMap<>(),
+                        CopyOptions.create()
+                                .setIgnoreNullValue(true)
+                                .setIgnoreError(true)
+                                .setFieldValueEditor((fieldName, fieldValue) -> {
+                                            if(fieldValue==null){
+                                                return null;
+                                            }
+                                            return fieldValue.toString() ;
+                                        }
+                                ));
+                stringRedisTemplate.opsForHash().putAll(key,stringObjectMap);
+            });
+            keys=stringRedisTemplate.keys(pattern);
+        }
+        //挂载到redis上
+        List<Petpark>Skills=new ArrayList<>();
+        keys.forEach(key->{
+            Map<Object, Object> entries = stringRedisTemplate.opsForHash().entries(key);
+            Petpark Petpark = BeanUtil.fillBeanWithMap(entries, new Petpark(), false);
+            Skills.add(Petpark);
+        });
+        return Result.ok(Skills);
     }
 }
 

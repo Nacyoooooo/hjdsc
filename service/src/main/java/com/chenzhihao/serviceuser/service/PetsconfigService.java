@@ -24,4 +24,5 @@ public interface PetsconfigService extends IService<Petsconfig> {
     Result<?> deletePets(Long id);
 
 
+    Result<?> getPetConfigs(Integer pageId);
 }
