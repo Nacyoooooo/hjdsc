@@ -21,7 +21,7 @@ const login=async ()=>{
         router.push('/admin')
       }
       else {
-
+        router.push(('/homepage'))
       }
 
     }else {

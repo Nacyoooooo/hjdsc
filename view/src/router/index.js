@@ -50,6 +50,19 @@ const routes = [
       }
     ]
   }
+  ,{
+    path: '/homepage',
+    component:()=>import('../views/user/homePage.vue'),
+    children: [
+      {
+        path: 'petpark',
+        component:()=>import('../views/user/petPark.vue'),
+      },{
+        path: 'userData',
+        component:()=>import('../views/user/userdata.vue'),
+      }
+    ]
+  }
 ]
 
 const router = createRouter({

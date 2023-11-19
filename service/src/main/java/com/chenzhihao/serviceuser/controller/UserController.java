@@ -1,5 +1,6 @@
 package com.chenzhihao.serviceuser.controller;
 
+import com.chenzhihao.serviceuser.service.NoticeService;
 import com.chenzhihao.serviceuser.service.SignsService;
 import com.chenzhihao.serviceuser.service.UsersService;
 import com.chenzhihao.serviceuser.dto.UserDataDto;
@@ -20,6 +21,8 @@ public class UserController {
     private UsersService usersService;
     @Autowired
     private SignsService signsService;
+    @Autowired
+    private NoticeService noticeService;
     @PostMapping("/sign")
     @ResponseBody
     public Result<?> sign(){
@@ -40,5 +43,10 @@ public class UserController {
     @ResponseBody
     public Result<?> updateInfo(@RequestBody UserDataDto users){
         return usersService.updateInfo(users);
+    }
+    @PostMapping("/getNotice")
+    @ResponseBody
+    public Result<?> getNotice(){
+        return noticeService.getNotice();
     }
 }

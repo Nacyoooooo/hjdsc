@@ -93,12 +93,7 @@ public class PetparkServiceImpl extends ServiceImpl<PetparkMapper, Petpark>
                                                 return fieldValue.toString();
                                             }
                                     ));
-                    capturerecord.setCreatetime(new Date());
-                    capturerecord.setUpdatetime(new Date());
-                    int insert = capturerecordMapper.insert(capturerecord);
-                    if(insert<=0){
-
-                    }
+                    createCaptureRecord(capturerecord.getCid(),capturerecord.getUid());
                     // 4.确认消息 XACK
                     stringRedisTemplate.opsForStream().acknowledge("s1", "g1", record.getId());
                 } catch (Exception e) {
@@ -149,9 +144,24 @@ public class PetparkServiceImpl extends ServiceImpl<PetparkMapper, Petpark>
         List<Petpark> catched = list(new QueryWrapper<Petpark>()
                 .eq("catched", 1)
                 .gt("count",0));
-        if(catched==null){
+        if(catched==null||catched.isEmpty()){
             return Result.fail();
         }
+        catched.forEach(c->{
+            String key=PET_PARK_KEY+c.getId();
+            Map<String, Object> stringObjectMap = BeanUtil.beanToMap(c, new HashMap<>(),
+                    CopyOptions.create()
+                            .setIgnoreNullValue(true)
+                            .setIgnoreError(true)
+                            .setFieldValueEditor((fieldName, fieldValue) -> {
+                                        if(fieldValue==null){
+                                            return null;
+                                        }
+                                        return fieldValue.toString() ;
+                                    }
+                            ));
+            stringRedisTemplate.opsForHash().putAll(key,stringObjectMap);
+        });
         return Result.ok(catched);
     }
 
@@ -205,38 +215,6 @@ public class PetparkServiceImpl extends ServiceImpl<PetparkMapper, Petpark>
             throw new RuntimeException(e);
         }
         return Result.ok();
-        /*
-        Users user = UserHolder.getUser();
-        if(null==user){
-            return Result.fail();
-        }
-        QueryWrapper<Petpark> park = new QueryWrapper<Petpark>()
-                //该数据是否存在
-                .eq("id", parkid)
-                //是否可被捕捉
-                .eq("catched", 1)
-                //数量是否大于0
-                .gt("count", 0);
-        Petpark one = getOne(park);
-        if(one==null){
-            return Result.fail();
-        }
-
-        SimpleRedisLock lock = new SimpleRedisLock("captured:" + user.getId(), stringRedisTemplate);
-        //获取代理对象（事务）
-        boolean isLock = lock.tryLock(1200);
-        if(!isLock){
-            //获取锁失败,返回错误或重试
-            return Result.fail("不允许重复下单");
-        }
-        try {
-            PetparkService proxy = (PetparkService)AopContext.currentProxy();
-            return proxy.createCaptureRecord(parkid);
-        } finally {
-            //释放锁
-            lock.unlock();
-        }*/
-
     }
 
     @Transactional
@@ -269,6 +247,56 @@ public class PetparkServiceImpl extends ServiceImpl<PetparkMapper, Petpark>
             return Result.fail();
         }
         return Result.ok();
+    }
+    @Transactional(rollbackFor = {Exception.class})
+    public void createCaptureRecord(Integer parkid,Integer uid) throws Exception {
+        Wrapper check = new QueryWrapper<>()
+                .eq("uid", uid)
+                .eq("pid", parkid);
+        Long l = capturerecordMapper.selectCount(check);
+        if(l>0){
+            throw new Exception();
+        }
+        boolean success = update()
+                .setSql("count=count-1")
+                .eq("id", parkid)
+                .gt("count", 0).update();
+        if(!success){
+            throw new Exception();
+        }
+        Capturerecord capturerecord = new Capturerecord();
+        capturerecord.setCid(parkid);
+        capturerecord.setPid(parkid.intValue());
+        capturerecord.setUid(uid);
+        capturerecord.setCreatetime(new Date());
+        capturerecord.setUpdatetime(new Date());
+        int insert = capturerecordMapper.insert(capturerecord);
+        if(insert<=0) {
+            throw new Exception();
+        }
+        String key=PET_PARK_KEY+parkid;
+        Boolean exist = stringRedisTemplate.hasKey(key);
+        if(!exist){
+            throw new Exception();
+        }
+        Map<Object, Object> entries = stringRedisTemplate.opsForHash().entries(key);
+        Petpark petpark = BeanUtil.fillBeanWithMap(entries, new Petpark(), false);
+        if(petpark==null){
+            throw new Exception();
+        }
+        String pKey=PET_PARK_KEY+petpark.getId();
+        Map<String, Object> stringObjectMap = BeanUtil.beanToMap(petpark, new HashMap<>(),
+                CopyOptions.create()
+                        .setIgnoreNullValue(true)
+                        .setIgnoreError(true)
+                        .setFieldValueEditor((fieldName, fieldValue) -> {
+                                    if(fieldValue==null){
+                                        return null;
+                                    }
+                                    return fieldValue.toString() ;
+                                }
+                        ));
+        stringRedisTemplate.opsForHash().putAll(pKey,stringObjectMap);
     }
     private static Integer number=0;
     @Override

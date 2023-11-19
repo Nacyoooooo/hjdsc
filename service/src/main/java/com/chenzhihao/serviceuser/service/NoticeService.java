@@ -15,4 +15,6 @@ import org.springframework.stereotype.Service;
 public interface NoticeService extends IService<Notice> {
 
     Result<?> getComments();
+
+    Result<?> getNotice();
 }

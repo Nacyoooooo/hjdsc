@@ -6,9 +6,9 @@ export const useUserInfoStore = pinia.defineStore("userinfo-store", () => {
     const tokenJson=ref("")
     const setToken = (token) => {
         try {
-            localStorage.setItem("token", JSON.stringify(token));
+            sessionStorage.setItem("token", JSON.stringify(token));
             console.log(token)
-            return JSON.parse(tokenJson.value||window.localStorage.getItem("user")||"{}")
+            return JSON.parse(tokenJson.value||window.sessionStorage.getItem("user")||"{}")
         }catch (err){
             ElMessage.error("json字符串格式不对！！")
         }
@@ -16,7 +16,7 @@ export const useUserInfoStore = pinia.defineStore("userinfo-store", () => {
     };
 
     function getToken  ()  {
-        const userJSON = localStorage.getItem("token");
+        const userJSON = sessionStorage.getItem("token");
         if (userJSON) {
             return JSON.parse(userJSON);
         }
@@ -24,7 +24,7 @@ export const useUserInfoStore = pinia.defineStore("userinfo-store", () => {
     };
 
     const removeToken = () => {
-        localStorage.removeItem("token");
+        sessionStorage.removeItem("token");
         tokenJson.value=""
     };
 

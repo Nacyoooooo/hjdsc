@@ -37,6 +37,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static com.chenzhihao.serviceuser.constant.RedisConstants.*;
+import static com.chenzhihao.serviceuser.constant.UserCode.ADMIN;
 
 
 /**
@@ -68,6 +69,9 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users>
         if(user==null){
             return Result.fail(ResultCodeEnum.USER_UNEXIST);
         }
+        if(!one.getAuthority().equals(user.getAuthority())){
+            return Result.fail();
+        }
         //如果存在，则开始校验密码
         // 密码校验成功，则返回登录成功信息和token
         if(MD5.encrypt(user.getPassword()).equals(one.getPassword())){
@@ -88,7 +92,7 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users>
                             ));
             //如果是管理员
             String tokenkey;
-            if(user.getAuthority().equals(1)){
+            if(user.getAuthority().equals(ADMIN)){
                 tokenkey=LOGIN_ADMIN_KEY+one.getId();
             }
             //如果是用户

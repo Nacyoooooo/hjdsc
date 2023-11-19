@@ -16,6 +16,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.chenzhihao.serviceuser.constant.RedisConstants.LOGIN_ADMIN_KEY;
 import static com.chenzhihao.serviceuser.constant.RedisConstants.LOGIN_USER_KEY;
+import static com.chenzhihao.serviceuser.constant.UserCode.ADMIN;
 
 @Slf4j
 public class RefreshTokenInterceptor implements HandlerInterceptor {
@@ -38,11 +39,11 @@ public class RefreshTokenInterceptor implements HandlerInterceptor {
         Integer userId = JwtHelper.getUserId(token);
         Integer userAuthority = JwtHelper.getUserAuthority(token);
         String key;
-        if(userAuthority.equals(1)){
+        if(userAuthority.equals(ADMIN)){
             key= LOGIN_ADMIN_KEY+userId;
         }
         else {
-            key=LOGIN_USER_KEY+userAuthority;
+            key=LOGIN_USER_KEY+userId;
         }
         //从redis中找用户，如果没有，则放行，让它去登录
         Map<Object, Object> entries = stringRedisTemplate.opsForHash().entries(key);

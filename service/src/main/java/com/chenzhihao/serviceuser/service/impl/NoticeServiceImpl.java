@@ -38,7 +38,7 @@ public class NoticeServiceImpl extends ServiceImpl<NoticeMapper, Notice>
             return Result.fail();
         }
         Integer code=-1;
-        if(user.getAuthority()==ADMIN){
+        if(user.getAuthority().equals(ADMIN)){
             code=1;
         }
         String pattern=NOTICE_KEY+"*";
@@ -80,6 +80,29 @@ public class NoticeServiceImpl extends ServiceImpl<NoticeMapper, Notice>
             return Result.ok(notices);
         }
 
+    }
+
+    //用于实时更新
+    @Override
+    public Result<?> getNotice() {
+        //从redis中查找全部公告
+        String pattern=NOTICE_KEY+"*";
+        Set<String> keys = stringRedisTemplate.keys(pattern);
+        if(keys==null||keys.size()<=0){
+            List<Notice> list = list();
+            if(list==null||list.isEmpty()){
+                return Result.fail();
+            }
+            list.forEach(l->{
+                stringRedisTemplate.opsForValue().set(NOTICE_KEY+l.getId(), JSONUtil.toJsonStr(l));
+            });
+        }
+        //找不到，就从数据库拿
+        //创建一个set集合，记录查看过的人的id
+        //如果看过，则不推送
+        //没看过，则需要推送
+
+        return null;
     }
 }
 
