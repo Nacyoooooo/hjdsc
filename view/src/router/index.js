@@ -61,6 +61,14 @@ const routes = [
         path: 'userData',
         component:()=>import('../views/user/userdata.vue'),
       }
+      ,{
+        path: 'petstore',
+        component:()=>import('../views/user/petstore.vue'),
+      }
+      ,{
+        path: 'fight',
+        component:()=>import('../views/user/fight.vue'),
+      }
     ]
   }
 ]

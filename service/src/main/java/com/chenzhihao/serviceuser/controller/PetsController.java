@@ -2,6 +2,7 @@ package com.chenzhihao.serviceuser.controller;
 
 import com.chenzhihao.serviceuser.model.Petsconfig;
 import com.chenzhihao.serviceuser.result.Result;
+import com.chenzhihao.serviceuser.service.MainpetService;
 import com.chenzhihao.serviceuser.service.PetsconfigService;
 import com.chenzhihao.serviceuser.service.PetstoreService;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,8 @@ public class PetsController {
     private PetsconfigService petsconfigService;
     @Autowired
     private PetstoreService petstoreService;
+    @Autowired
+    private MainpetService mainpetService;
 
     /**
      * 根据宠物id获取宠物基本配置信息
@@ -72,5 +75,10 @@ public class PetsController {
     @ResponseBody
     public Result<?> setBagFirst(@PathVariable Long currentPet){
         return petstoreService.setBagFirst(currentPet);
+    }
+    @PostMapping("/getMainPets/{pid}")
+    @ResponseBody
+    public Result<?> getMainPets(@PathVariable Integer pid){
+        return mainpetService.getMainPets(pid);
     }
 }

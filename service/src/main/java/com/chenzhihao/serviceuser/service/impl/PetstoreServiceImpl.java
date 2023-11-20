@@ -10,8 +10,10 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.chenzhihao.serviceuser.mapper.PetstoreMapper;
 import com.chenzhihao.serviceuser.model.Petstore;
 import com.chenzhihao.serviceuser.model.Users;
+import com.chenzhihao.serviceuser.model.entity.Pet;
 import com.chenzhihao.serviceuser.result.Result;
 import com.chenzhihao.serviceuser.service.PetstoreService;
+import com.chenzhihao.serviceuser.util.PetUtil;
 import com.chenzhihao.serviceuser.util.UserHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -33,6 +35,10 @@ public class PetstoreServiceImpl extends ServiceImpl<PetstoreMapper, Petstore>
         implements PetstoreService {
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
+    @Autowired
+    private PetstoreMapper petstoreMapper;
+    @Autowired
+    private PetUtil petUtil;
 
 
     @Override
@@ -50,9 +56,9 @@ public class PetstoreServiceImpl extends ServiceImpl<PetstoreMapper, Petstore>
             if(petslist==null||petslist.size()<=0){
                 return Result.fail();
             }
-            List<Petstore>petstores=new ArrayList<>();
+            List<Pet>petstores=new ArrayList<>();
             petslist.forEach(petString->{
-                Petstore pet = JSONUtil.toBean(petString, Petstore.class);
+                Pet pet = JSONUtil.toBean(petString, Pet.class);
                 petstores.add(pet);
             });
             if(petstores.size()>0){
@@ -63,20 +69,25 @@ public class PetstoreServiceImpl extends ServiceImpl<PetstoreMapper, Petstore>
         }
         //不存在则优先从数据库中读取数据，随后写入redis
         else {
-            //确定分页逻辑
-            IPage page=new Page(0,6);
-            QueryWrapper<Petstore> q = new QueryWrapper<Petstore>()
-                    .eq("uid", uid)
-                    .ne("performed",0);
-            IPage page1 = page(page, q);
-            //读取数据
-            List<Petstore> list = list(q);
-            if (list.size()>0){
-                list.forEach(petstore -> {
-                    stringRedisTemplate.opsForList().rightPush(key, JSONUtil.toJsonStr(petstore));
-                });
+            List<Petstore> myPets = petstoreMapper.selectList(new QueryWrapper<Petstore>()
+                    //玩家id
+                    .eq("id", user.getId())
+                    //在背包中的宠物
+                    .gt("performed", 0));
+            //如果玩家背包中没有宠物，则战斗结束
+            if(null==myPets||myPets.size()<=0){
+                return Result.fail();
             }
-            return Result.ok(list);
+            List<Pet> pets=new ArrayList<>();
+            //获取自己背包中宠物的信息，挂载到redis
+            petUtil.getPet(pets,myPets);
+            if(pets==null||pets.size()<=0){
+                return Result.fail();
+            }
+            pets.forEach(pet -> {
+                stringRedisTemplate.opsForList().rightPush(key,JSONUtil.toJsonStr(pet));
+            });
+            return Result.ok(pets);
         }
     }
 

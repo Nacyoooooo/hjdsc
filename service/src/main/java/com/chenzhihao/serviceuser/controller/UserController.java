@@ -1,5 +1,6 @@
 package com.chenzhihao.serviceuser.controller;
 
+import com.chenzhihao.serviceuser.service.MoneyService;
 import com.chenzhihao.serviceuser.service.NoticeService;
 import com.chenzhihao.serviceuser.service.SignsService;
 import com.chenzhihao.serviceuser.service.UsersService;
@@ -23,6 +24,8 @@ public class UserController {
     private SignsService signsService;
     @Autowired
     private NoticeService noticeService;
+    @Autowired
+    private MoneyService moneyService;
     @PostMapping("/sign")
     @ResponseBody
     public Result<?> sign(){
@@ -48,5 +51,10 @@ public class UserController {
     @ResponseBody
     public Result<?> getNotice(){
         return noticeService.getNotice();
+    }
+    @PostMapping("/getCount")
+    @ResponseBody
+    public Result<?> getCount(){
+        return moneyService.getCount();
     }
 }

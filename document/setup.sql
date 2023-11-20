@@ -246,3 +246,35 @@ CREATE TABLE `notice` (
 );
 insert into notice (uid, content, createTime, updateTime) VALUES
 (1,'这是一条测试数据','2023-10-18 09:00:00','2023-10-18 09:00:00');
+-- ----------------------------
+-- Table structure for mainpet
+-- 三主宠信息登记表
+-- ----------------------------
+DROP TABLE IF EXISTS `mainpet`;
+
+CREATE TABLE `mainpet` (
+                          `id` int auto_increment COMMENT  '主键',
+                          `uid` int COMMENT '领取者的id',
+                          `pid` int comment '玩家选择的三主宠的序列号',
+                          `createTime` DATETIME comment '签到数据创建时间',
+                          `updateTime` DATETIME comment '签到数据更新时间',
+                          PRIMARY KEY (`id`)USING BTREE
+);
+insert into mainpet (uid, pid, createTime, updateTime) VALUES
+                                                           (1,1,'2023-10-18 09:00:00','2023-10-18 09:00:00');
+-- ----------------------------
+-- Table structure for mainpet
+-- 三主宠信息登记表
+-- ----------------------------
+DROP TABLE IF EXISTS `money`;
+
+CREATE TABLE `money` (
+                           `id` int auto_increment COMMENT  '主键',
+                           `uid` int COMMENT '玩家id',
+                           `count` int comment '金币的数量大小',
+                           `createTime` DATETIME comment '签到数据创建时间',
+                           `updateTime` DATETIME comment '签到数据更新时间',
+                           PRIMARY KEY (`id`)USING BTREE
+);
+insert into money (uid, count, createTime, updateTime)
+values (1,10000,'2023-10-18 09:00:00','2023-10-18 09:00:00');

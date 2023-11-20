@@ -19,7 +19,16 @@
               <el-icon><icon-menu /></el-icon>
               <span>个人信息页</span>
             </el-menu-item>
-          </el-menu></el-aside
+            <el-menu-item index="/homepage/petstore">
+              <el-icon><icon-menu /></el-icon>
+              <span>宠物仓库</span>
+            </el-menu-item>
+            <el-menu-item index="/homepage/fight">
+              <el-icon><icon-menu /></el-icon>
+              <span>战斗</span>
+            </el-menu-item>
+          </el-menu>
+        </el-aside
         >
         <el-main> <router-view></router-view></el-main>
       </el-container>

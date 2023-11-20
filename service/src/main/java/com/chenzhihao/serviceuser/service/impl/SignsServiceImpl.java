@@ -64,9 +64,11 @@ public class SignsServiceImpl extends ServiceImpl<SignsMapper, Signs>
             Signs one = getOne(q);
             //如果没有查出，说明还没有签到过,要开始签到
             if(null==one){
+                one=new Signs();
                 one.setUid(id.intValue());
                 one.setSignyear(now.getYear());
                 one.setSignmonth(now.getMonthValue());
+                one.setSigndata(0);
             }
             //开始将得到的数据处理,转化为二进制字符串，并转化为数组
             char[] binaryChar = Integer.toBinaryString(one.getSigndata()).toCharArray();

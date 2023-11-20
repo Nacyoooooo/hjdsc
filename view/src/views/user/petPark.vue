@@ -55,7 +55,6 @@ const getPet=async (id)=>{
         <div v-if="scope.row.catched==1">可以</div>
         <div v-if="scope.row.catched==2">不可以</div>
       </template>
-
     </el-table-column>
     <el-table-column prop="createtime" label="createtime" >
       <template #default="scope">
