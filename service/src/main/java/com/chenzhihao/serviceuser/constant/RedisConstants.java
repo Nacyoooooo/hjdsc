@@ -15,6 +15,7 @@ public class RedisConstants {
     public static final String PET_PARK_ORDER="caputered:order:";
     public static final String NOTICE_KEY="notice:";
     public static final String USER_MONEY_KEY="user:money:";
-    public static final Long LOGIN_USER_TTL = 36000L;
-    public static final Long PETS_CONFIG_TTL = 36000L;
+    public static final Long LOGIN_USER_TTL = 5L;
+    public static final Long PETS_CONFIG_TTL = 5L;
+    public static final Long USERDATA_TTL = 1L;
 }

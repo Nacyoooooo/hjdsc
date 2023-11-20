@@ -10,10 +10,11 @@
             <result property="pid" column="pid" jdbcType="INTEGER"/>
             <result property="createtime" column="createTime" jdbcType="TIMESTAMP"/>
             <result property="updatetime" column="updateTime" jdbcType="TIMESTAMP"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,uid,pid,
-        createTime,updateTime
+        createTime,updateTime,status
     </sql>
 </mapper>

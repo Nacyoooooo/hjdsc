@@ -69,6 +69,10 @@ const routes = [
         path: 'fight',
         component:()=>import('../views/user/fight.vue'),
       }
+      ,{
+        path: 'Similarity',
+        component:()=>import('../views/user/Similarity.vue'),
+      }
     ]
   }
 ]

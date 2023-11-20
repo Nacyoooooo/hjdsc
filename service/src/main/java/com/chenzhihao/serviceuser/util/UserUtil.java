@@ -1,11 +1,16 @@
 package com.chenzhihao.serviceuser.util;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.bean.copier.CopyOptions;
 import com.chenzhihao.serviceuser.dto.UserDataDto;
 import com.chenzhihao.serviceuser.annotation.AutoFill;
 import com.chenzhihao.serviceuser.constant.UserCode;
 import com.chenzhihao.serviceuser.dto.RegisterDto;
 import com.chenzhihao.serviceuser.model.Users;
 import org.springframework.stereotype.Component;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.chenzhihao.serviceuser.constant.FillPeriod.SAVE;
 import static com.chenzhihao.serviceuser.constant.FillPeriod.UPDATE;

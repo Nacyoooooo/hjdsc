@@ -49,5 +49,6 @@ public class Pet {
     private Petsconfig petsconfig;
     //宠物的出战顺序
     private Integer order;
+    private Integer experience;
 
 }

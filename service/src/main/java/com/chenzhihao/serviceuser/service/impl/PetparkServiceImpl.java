@@ -13,15 +13,19 @@ import com.chenzhihao.serviceuser.model.*;
 import com.chenzhihao.serviceuser.result.Result;
 import com.chenzhihao.serviceuser.service.PetparkService;
 
+import com.chenzhihao.serviceuser.util.ILock;
 import com.chenzhihao.serviceuser.util.RedisIdWorker;
+import com.chenzhihao.serviceuser.util.SimpleRedisLock;
 import com.chenzhihao.serviceuser.util.UserHolder;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.connection.stream.*;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
@@ -40,6 +44,7 @@ import static com.chenzhihao.serviceuser.constant.RedisConstants.PLAY_SKILL_KEY;
  */
 @Service
 @Slf4j
+@EnableTransactionManagement
 public class PetparkServiceImpl extends ServiceImpl<PetparkMapper, Petpark>
         implements PetparkService {
     @Autowired
@@ -51,51 +56,28 @@ public class PetparkServiceImpl extends ServiceImpl<PetparkMapper, Petpark>
     @Autowired
     private RedisIdWorker redisIdWorker;
     private BlockingQueue<Capturerecord> capturerecordsTasks=new ArrayBlockingQueue(1024*1024);
+    @Deprecated
     private static final ExecutorService SECKILL_ORDER_EXECUTOR= Executors.newSingleThreadExecutor();
     @PostConstruct
     private void init(){
         SECKILL_ORDER_EXECUTOR.submit(new ParkOrderHandler());
     }
+    @Deprecated
     private class ParkOrderHandler implements Runnable{
+
         @Override
         public void run() {
-            String queueName="stream.orders";
-            Boolean exist = stringRedisTemplate.hasKey(queueName);
-            if(!exist){
-                stringRedisTemplate.opsForStream().createGroup(queueName,"g1");
-            }
-
             while (true) {
 
                 try {
-                    // 1.获取消息队列中的订单信息 XREADGROUP GROUP g1 c1 COUNT 1 BLOCK 2000 STREAMS s1 >
-                    List<MapRecord<String, Object, Object>> list = stringRedisTemplate.opsForStream().read(
-                            Consumer.from("g1", "c1"),
-                            StreamReadOptions.empty().count(1).block(Duration.ofSeconds(2)),
-                            StreamOffset.create(queueName, ReadOffset.lastConsumed())
-                    );
-                    // 2.判断订单信息是否为空
-                    if (list == null || list.isEmpty()) {
-                        // 如果为null，说明没有消息，继续下一次循环
+                    //从阻塞队列中拿数据
+                    Capturerecord capturerecord = capturerecordsTasks.take();
+                    if(capturerecord==null){
                         continue;
                     }
-                    // 解析数据
-                    MapRecord<String, Object, Object> record = list.get(0);
-                    Map<Object, Object> value = record.getValue();
-                    Capturerecord capturerecord = BeanUtil.mapToBean(value, Capturerecord.class, true,
-                            CopyOptions.create()
-                                    .setIgnoreNullValue(true)
-                                    .setIgnoreError(true)
-                                    .setFieldValueEditor((fieldName, fieldValue) -> {
-                                                if (fieldValue == null) {
-                                                    return null;
-                                                }
-                                                return fieldValue.toString();
-                                            }
-                                    ));
-                    createCaptureRecord(capturerecord.getCid(),capturerecord.getUid());
-                    // 4.确认消息 XACK
-                    stringRedisTemplate.opsForStream().acknowledge("s1", "g1", record.getId());
+                    //将数据写入数据库
+                    PetparkServiceImpl petparkService = (PetparkServiceImpl) AopContext.currentProxy();
+                    petparkService.createCaptureRecord(capturerecord);
                 } catch (Exception e) {
                     log.error("处理订单异常", e);
                 }
@@ -166,7 +148,7 @@ public class PetparkServiceImpl extends ServiceImpl<PetparkMapper, Petpark>
     }
 
     @Override
-    public Result<?> getPet(Long parkid) {
+    public Result<?> getPet(Long parkid) throws InterruptedException {
         //先判断redis中是否存在
         String key=PET_PARK_CAPTURED+parkid;
         String key2=PET_PARK_ORDER+parkid;
@@ -193,26 +175,23 @@ public class PetparkServiceImpl extends ServiceImpl<PetparkMapper, Petpark>
         Long result = stringRedisTemplate.execute(
                 SECKILL_SCRIPT,
                 Collections.emptyList(),
-                parkid.toString(), userId.toString(),String.valueOf(order)
+                parkid.toString(), userId.toString(),String.valueOf(order),String.valueOf(10)
         );
+        Capturerecord capturerecord=new Capturerecord();
+        capturerecord.setCid(parkid.intValue());
+        capturerecord.setPid(parkid.intValue());
+        capturerecord.setUid(userId);
+        capturerecord.setCreatetime(new Date());
+        capturerecord.setUpdatetime(new Date());
+        capturerecord.setStatus(1);
+        capturerecord.setLevel(10);
+        capturerecordsTasks.put(capturerecord);
         if (null==result){
             return Result.fail("异常");
         }
         int r = result.intValue();
         if(r!=0){
             return Result.fail(r==1?"宠物数量不足":"不能重复捕捉");
-        }
-
-        Capturerecord capturerecord = new Capturerecord();
-        capturerecord.setCid(parkid.intValue());
-        capturerecord.setUid(userId.intValue());
-        capturerecord.setId((int) order);
-        capturerecord.setCreatetime(new Date());
-        capturerecord.setUpdatetime(new Date());
-        try {
-            capturerecordsTasks.put(capturerecord);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
         }
         return Result.ok();
     }
@@ -249,32 +228,26 @@ public class PetparkServiceImpl extends ServiceImpl<PetparkMapper, Petpark>
         return Result.ok();
     }
     @Transactional(rollbackFor = {Exception.class})
-    public void createCaptureRecord(Integer parkid,Integer uid) throws Exception {
+    public void createCaptureRecord(Capturerecord capturerecord) throws Exception {
         Wrapper check = new QueryWrapper<>()
-                .eq("uid", uid)
-                .eq("pid", parkid);
+                .eq("uid", capturerecord.getUid())
+                .eq("pid", capturerecord.getCid());
         Long l = capturerecordMapper.selectCount(check);
         if(l>0){
             throw new Exception();
         }
         boolean success = update()
                 .setSql("count=count-1")
-                .eq("id", parkid)
+                .eq("id", capturerecord.getCid())
                 .gt("count", 0).update();
         if(!success){
             throw new Exception();
         }
-        Capturerecord capturerecord = new Capturerecord();
-        capturerecord.setCid(parkid);
-        capturerecord.setPid(parkid.intValue());
-        capturerecord.setUid(uid);
-        capturerecord.setCreatetime(new Date());
-        capturerecord.setUpdatetime(new Date());
         int insert = capturerecordMapper.insert(capturerecord);
         if(insert<=0) {
             throw new Exception();
         }
-        String key=PET_PARK_KEY+parkid;
+        String key=PET_PARK_KEY+capturerecord.getCid();
         Boolean exist = stringRedisTemplate.hasKey(key);
         if(!exist){
             throw new Exception();

@@ -100,7 +100,8 @@ CREATE TABLE `captureRecord` (
                            `pid` int COMMENT '宠物的编号',
                            `createTime` DATETIME comment '记录创建时间',
                            `updateTime` DATETIME comment '记录更新时间',
-                            `level` int comment '捕捉时的初始等级'
+                            `level` int comment '捕捉时的初始等级',
+                           `status` int comment '该捕捉记录是否转化成了宠物'
 );
 -- ----------------------------
 -- Table structure for skills
@@ -201,17 +202,18 @@ CREATE TABLE `petStore` (
                               `skillthree` int comment '第三格技能',
                               `skillfour` int comment '第四格技能',
                               `level` int comment '等级',
+                              `experience` int comment '经验',
                               PRIMARY KEY (`id`)USING BTREE
 );
 insert into petStore (pid, uid, healthPoint, physicalDamagePoint, magicalDamagePoin, physicalDefence,
-                      magicalDefence, speed, createTime, updateTime,performed,skillone,skilltwo,skillthree,skillfour,level) VALUES
-(1,1,1,1,1,1,1,1,'2023-10-18 09:00:00','2023-10-18 09:00:00',1,1,0,0,0,100);
+                      magicalDefence, speed, createTime, updateTime,performed,skillone,skilltwo,skillthree,skillfour,level,experience) VALUES
+(1,1,1,1,1,1,1,1,'2023-10-18 09:00:00','2023-10-18 09:00:00',1,1,0,0,0,100,0);
 insert into petStore (pid, uid, healthPoint, physicalDamagePoint, magicalDamagePoin, physicalDefence,
-                      magicalDefence, speed, createTime, updateTime,performed,skillone,skilltwo,skillthree,skillfour,level) VALUES
-    (2,1,1,1,1,1,1,1,'2023-10-18 09:00:00','2023-10-18 09:00:00',2,1,0,0,0,100);
+                      magicalDefence, speed, createTime, updateTime,performed,skillone,skilltwo,skillthree,skillfour,level,experience) VALUES
+    (2,1,1,1,1,1,1,1,'2023-10-18 09:00:00','2023-10-18 09:00:00',2,1,0,0,0,100,0);
 insert into petStore (pid, uid, healthPoint, physicalDamagePoint, magicalDamagePoin, physicalDefence,
-                      magicalDefence, speed, createTime, updateTime,performed,skillone,skilltwo,skillthree,skillfour,level) VALUES
-    (3,1,1,1,1,1,1,1,'2023-10-18 09:00:00','2023-10-18 09:00:00',0,2,0,0,0,100);
+                      magicalDefence, speed, createTime, updateTime,performed,skillone,skilltwo,skillthree,skillfour,level,experience) VALUES
+    (3,1,1,1,1,1,1,1,'2023-10-18 09:00:00','2023-10-18 09:00:00',0,2,0,0,0,100,0);
 -- ----------------------------
 -- Table structure for signs
 -- 用户签到信息记录表
@@ -258,10 +260,11 @@ CREATE TABLE `mainpet` (
                           `pid` int comment '玩家选择的三主宠的序列号',
                           `createTime` DATETIME comment '签到数据创建时间',
                           `updateTime` DATETIME comment '签到数据更新时间',
+                          `status` int comment '状态，用于约束是否已经放入玩家仓库,1是没放，2是放了',
                           PRIMARY KEY (`id`)USING BTREE
 );
-insert into mainpet (uid, pid, createTime, updateTime) VALUES
-                                                           (1,1,'2023-10-18 09:00:00','2023-10-18 09:00:00');
+insert into mainpet (uid, pid, createTime, updateTime,status) VALUES
+                                                           (1,1,'2023-10-18 09:00:00','2023-10-18 09:00:00',1);
 -- ----------------------------
 -- Table structure for mainpet
 -- 三主宠信息登记表
@@ -278,3 +281,20 @@ CREATE TABLE `money` (
 );
 insert into money (uid, count, createTime, updateTime)
 values (1,10000,'2023-10-18 09:00:00','2023-10-18 09:00:00');
+insert into money (uid, count, createTime, updateTime)
+values (2,10000,'2023-10-18 09:00:00','2023-10-18 09:00:00');
+-- ----------------------------
+-- Table structure for reason
+-- 封禁信息，解禁申请登记表
+-- ----------------------------
+DROP TABLE IF EXISTS `reason`;
+
+CREATE TABLE `reason` (
+                         `id` int auto_increment COMMENT  '主键',
+                         `uid` int COMMENT '玩家id',
+                         `description` varchar(100) comment '原因/理由',
+                         `type` int comment '该申请的原因',
+                         `createTime` DATETIME comment '签到数据创建时间',
+                         `updateTime` DATETIME comment '签到数据更新时间',
+                         PRIMARY KEY (`id`)USING BTREE
+);

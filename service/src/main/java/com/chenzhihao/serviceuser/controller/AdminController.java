@@ -1,5 +1,6 @@
 package com.chenzhihao.serviceuser.controller;
 
+import com.chenzhihao.serviceuser.dto.BanReason;
 import com.chenzhihao.serviceuser.model.Petsconfig;
 import com.chenzhihao.serviceuser.result.Result;
 import com.chenzhihao.serviceuser.service.*;
@@ -40,10 +41,10 @@ public class AdminController {
     public Result<?> getUserInfoPagination(@PathVariable Integer pageId){
         return usersService.getUserInfo(pageId);
     }
-    @PostMapping("/banUser/{uid}")
+    @PostMapping("/banUser")
     @ResponseBody
-    public Result<?> banUser(@PathVariable Long uid){
-        return usersService.banUser(uid);
+    public Result<?> banUser(@RequestBody BanReason banReason){
+        return usersService.banUser(banReason);
     }
     @PostMapping("/setPets")
     @ResponseBody

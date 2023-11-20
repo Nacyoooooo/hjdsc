@@ -49,7 +49,6 @@ public class AutoValidateImpl{
                         if(!notnull){
                             return Result.fail(field.getName()+"为空");
                         }
-                        //TODO 执行对时间的校验
                         if(value==FieldType.TIME){
 
                         }
@@ -69,7 +68,6 @@ public class AutoValidateImpl{
         }
         return true;
     }
-    //TODO 执行对时间的判断
     public static boolean TIME(Object arg,Field  field){
         return false;
     }

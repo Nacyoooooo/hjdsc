@@ -15,6 +15,7 @@ import org.springframework.data.redis.connection.BitFieldSubCommands;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -27,7 +28,7 @@ import java.util.*;
  */
 @Service
 @EnableTransactionManagement
-//@Transactional(rollbackFor = {Exception.class})
+@Transactional(rollbackFor = {Exception.class})
 public class SignsServiceImpl extends ServiceImpl<SignsMapper, Signs>
         implements SignsService {
     @Autowired
@@ -72,10 +73,6 @@ public class SignsServiceImpl extends ServiceImpl<SignsMapper, Signs>
             }
             //开始将得到的数据处理,转化为二进制字符串，并转化为数组
             char[] binaryChar = Integer.toBinaryString(one.getSigndata()).toCharArray();
-            //如果数组长度为0，说明没有签到，开始签到
-            if(binaryChar.length<=0){
-
-            }
             //如果数组长度小于天数，则对数组扩容
             if (binaryChar.length<dayOfMonth){
                 binaryChar = Arrays.copyOf(binaryChar, dayOfMonth);
@@ -119,8 +116,15 @@ public class SignsServiceImpl extends ServiceImpl<SignsMapper, Signs>
                 return Result.ok(0);
             }
             char[] charArray = Long.toBinaryString(num).toCharArray();
-            if(charArray.length<dayOfMonth){
-               charArray = Arrays.copyOf(charArray, dayOfMonth);
+            if (charArray.length<dayOfMonth){
+                charArray = Arrays.copyOf(charArray, dayOfMonth);
+                for (int i = 0; i < charArray.length; i++) {
+                    Character c = Character.valueOf(charArray[i]);
+                    if(!c.equals(new Character('1'))&&!c.equals(new Character('0'))){
+                        charArray[i]='0';
+                    }
+                }
+                charArray[charArray.length-1]='1';//赋值为1，以示签到
             }
             charArray[charArray.length-1]='1';
             int newSignData = Integer.parseInt(new String(charArray), 2);
@@ -158,7 +162,6 @@ public class SignsServiceImpl extends ServiceImpl<SignsMapper, Signs>
      */
     @Override
     public Result<?> signCount() {
-        //TODO 未从数据库读取数据
         Users user = UserHolder.getUser();
         if(null==user){
             return Result.fail();
@@ -170,7 +173,24 @@ public class SignsServiceImpl extends ServiceImpl<SignsMapper, Signs>
         Boolean existKey = stringRedisTemplate.hasKey(key);
         //如果不存在，则需要先从数据库读取
         if(!existKey){
-
+            List<Signs> signs = list(new QueryWrapper<Signs>().eq("uid", user.getId()));
+            if(signs==null||signs.isEmpty()){
+                return Result.fail();
+            }
+            signs.forEach(s->{
+                Integer signdata = s.getSigndata();
+                if(signdata==null||signdata<0){
+                    return;
+                }
+                String binaryString = Integer.toBinaryString(signdata);
+                char[] charArray = binaryString.toCharArray();
+                int temp=0;
+                for (char c : charArray) {
+                    boolean equals = Character.valueOf(c).equals('1');
+                    stringRedisTemplate.opsForValue().setBit(key,temp,equals);
+                    temp++;
+                }
+            });
         }
         //如果已存在，则直接读取redis并统计
         int dayOfMonth = now.getDayOfMonth();

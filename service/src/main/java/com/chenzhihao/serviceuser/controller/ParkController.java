@@ -22,7 +22,7 @@ public class ParkController {
     }
     @PostMapping("/getPet/{parkid}")
     @ResponseBody
-    public Result<?> getPet(@PathVariable Long parkid){
+    public Result<?> getPet(@PathVariable Long parkid) throws InterruptedException {
         return petparkService.getPet(parkid);
     }
 }

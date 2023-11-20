@@ -38,6 +38,15 @@ public class Mainpet implements Serializable {
      * 签到数据更新时间
      */
     private Date updatetime;
+    private Integer status;
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

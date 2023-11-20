@@ -47,10 +47,10 @@ public class SimpleRedisLock implements ILock{
                 Collections.singletonList(KEY_PREFIX+name),
                 ID_PREFIX+Thread.currentThread().getId()
                 );
-        /*
-        String threadId=ID_PREFIX+Thread.currentThread().getId();
-        String id
-                = stringRedisTemplate.opsForValue().get(KEY_PREFIX + name);
-        stringRedisTemplate.delete(KEY_PREFIX+name);*/
+
+//        String threadId=ID_PREFIX+Thread.currentThread().getId();
+//        String id
+//                = stringRedisTemplate.opsForValue().get(KEY_PREFIX + name);
+//        stringRedisTemplate.delete(KEY_PREFIX+name);
     }
 }

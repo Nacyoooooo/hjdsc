@@ -27,6 +27,10 @@
               <el-icon><icon-menu /></el-icon>
               <span>战斗</span>
             </el-menu-item>
+            <el-menu-item index="/homepage/Similarity">
+              <el-icon><icon-menu /></el-icon>
+              <span>宠物相似度</span>
+            </el-menu-item>
           </el-menu>
         </el-aside
         >

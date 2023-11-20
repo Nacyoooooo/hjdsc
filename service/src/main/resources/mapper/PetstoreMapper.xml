@@ -22,6 +22,7 @@
             <result property="skillthree" column="skillthree" jdbcType="INTEGER"/>
             <result property="skillfour" column="skillfour" jdbcType="INTEGER"/>
             <result property="level" column="level" jdbcType="INTEGER"/>
+        <result property="experience" column="experience" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -30,6 +31,6 @@
         physicalDefence,magicalDefence,speed,
         createTime,updateTime,performed,
         skillone,skilltwo,skillthree,
-        skillfour,level
+        skillfour,level,experience
     </sql>
 </mapper>

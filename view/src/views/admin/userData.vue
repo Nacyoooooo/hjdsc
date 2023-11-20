@@ -9,6 +9,11 @@ const pageId=ref(1)
 const pageData=reactive({
   data:[]
 })
+const banReason=reactive({
+  id:[],
+  description:[],
+  type:1
+})
 onMounted(async ()=>{
   getUserCount()
   getUserInfo()
@@ -36,8 +41,8 @@ const getUserInfo=async ()=>{
     }
   })
 }
-const banUser=async (id)=>{
-  await  axios.post('/api/admins/banUser/'+id,{},{
+const banUser=async ()=>{
+  await  axios.post('/api/admins/banUser',banReason,{
     headers:{
       "authorization":store.getToken()
     }
@@ -46,11 +51,35 @@ const banUser=async (id)=>{
       ElMessage.success(res.data.msg)
     }
   })
+  dialogVisible.value = false
+}
+const dialogVisible=ref(false)
+const ban=(id)=>{
+  banReason.id=id
+  dialogVisible.value=true
+  console.log(banReason)
 }
 </script>
 
 <template>
 <h>这是用户信息查看界面</h>
+  <el-dialog
+      v-model="dialogVisible"
+      title="Tips"
+      width="30%"
+      :before-close="handleClose"
+  >
+    <span>封禁原因</span>
+    <el-input v-model="banReason.description"></el-input>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="dialogVisible = false">Cancel</el-button>
+        <el-button type="primary" @click="banUser">
+          Confirm
+        </el-button>
+      </span>
+    </template>
+  </el-dialog>
   <el-pagination
       background
       :page-size="10"
@@ -79,8 +108,8 @@ const banUser=async (id)=>{
     <el-table-column prop="createtime" label="createtime" />
     <el-table-column label="createtime" >
       <template #default="scope">
-        <el-button @click="banUser(scope.row.id)">封禁</el-button>
-        <el-button>解禁</el-button>
+        <el-button @click="ban(scope.row.id)">封禁</el-button>
+        <el-button >解禁</el-button>
       </template>
     </el-table-column>
   </el-table>

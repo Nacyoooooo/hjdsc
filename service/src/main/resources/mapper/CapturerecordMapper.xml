@@ -5,16 +5,17 @@
 <mapper namespace="com.chenzhihao.serviceuser.mapper.CapturerecordMapper">
 
     <resultMap id="BaseResultMap" type="com.chenzhihao.serviceuser.model.Capturerecord">
-            <id property="id" column="id" jdbcType="INTEGER"/>
-            <result property="cid" column="cid" jdbcType="INTEGER"/>
-            <result property="uid" column="uid" jdbcType="INTEGER"/>
-            <result property="pid" column="pid" jdbcType="INTEGER"/>
-            <result property="createtime" column="createTime" jdbcType="TIMESTAMP"/>
-            <result property="updatetime" column="updateTime" jdbcType="TIMESTAMP"/>
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="cid" column="cid" jdbcType="INTEGER"/>
+        <result property="uid" column="uid" jdbcType="INTEGER"/>
+        <result property="pid" column="pid" jdbcType="INTEGER"/>
+        <result property="createtime" column="createTime" jdbcType="TIMESTAMP"/>
+        <result property="updatetime" column="updateTime" jdbcType="TIMESTAMP"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,cid,uid,
-        pid,createTime,updateTime
+        pid,createTime,updateTime,status
     </sql>
 </mapper>

@@ -8,33 +8,33 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.chenzhihao.serviceuser.annotation.AutoValidate;
+import com.chenzhihao.serviceuser.dto.BanReason;
 import com.chenzhihao.serviceuser.dto.LoginDto;
 import com.chenzhihao.serviceuser.dto.RegisterDto;
 import com.chenzhihao.serviceuser.dto.UserDataDto;
+import com.chenzhihao.serviceuser.mapper.ReasonMapper;
 import com.chenzhihao.serviceuser.mapper.UsersMapper;
+import com.chenzhihao.serviceuser.model.Reason;
 import com.chenzhihao.serviceuser.model.Users;
 import com.chenzhihao.serviceuser.result.Result;
 import com.chenzhihao.serviceuser.result.ResultCodeEnum;
 import com.chenzhihao.serviceuser.service.UsersService;
-import com.chenzhihao.serviceuser.util.JwtHelper;
-import com.chenzhihao.serviceuser.util.MD5;
+import com.chenzhihao.serviceuser.util.*;
 
-import com.chenzhihao.serviceuser.util.UserHolder;
-import com.chenzhihao.serviceuser.util.UserUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.BitFieldSubCommands;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
+import java.util.*;
+import java.util.concurrent.*;
 
 import static com.chenzhihao.serviceuser.constant.RedisConstants.*;
 import static com.chenzhihao.serviceuser.constant.UserCode.ADMIN;
@@ -55,6 +55,14 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users>
     private StringRedisTemplate stringRedisTemplate;
     @Autowired
     private UserUtil util;
+    @Autowired
+    private ReasonMapper reasonMapper;
+    private static final ExecutorService REASON_EXECUTOR= Executors.newSingleThreadExecutor();
+    private BlockingQueue<Reason> reasonsTasks=new ArrayBlockingQueue(1024*1024);
+    @PostConstruct
+    private void init(){
+        REASON_EXECUTOR.submit(new wirteHandler());
+    }
 
     @AutoValidate
     @Override
@@ -145,8 +153,8 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users>
      * @return 今日签到
      */
     @Override
+    @Deprecated
     public Result<?> sign() {
-        //TODO 还未保存到数据库
         Users user = UserHolder.getUser();
         if(null==user){
             return Result.fail();
@@ -168,6 +176,7 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users>
      *
      */
     @Override
+    @Deprecated
     public Result<?> signCount() {
         Users user = UserHolder.getUser();
         if(null==user){
@@ -190,7 +199,6 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users>
         if(null==num||num==0){
             return Result.ok(0);
         }
-        //TODO 计算当前连续签到天数(从今天算起还是明天算起）
         int count=0;
         //计算本月最大连续签到天数
         int max=0;
@@ -244,7 +252,6 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users>
      */
     @Override
     public Result<?> getInfo() {
-        //TODO 用户获取个人信息
         Users user = UserHolder.getUser();
         if(null==user){
             return  Result.fail();
@@ -337,7 +344,9 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users>
         Boolean exist = stringRedisTemplate.hasKey(key);
         //若没有，则从数据库中寻找
         if(!exist){
-            LambdaQueryWrapper<Users> select = new QueryWrapper<Users>().lambda()
+            LambdaQueryWrapper<Users> select = new QueryWrapper<Users>()
+                    //不选择管理员
+                    .ne("authority",1).lambda()
                     //不查询password字段
                     // 不查询updateTime字段
                     .select(Users.class,
@@ -353,6 +362,7 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users>
             list.forEach(user->{
                 stringRedisTemplate.opsForList().rightPush(key, JSONUtil.toJsonStr(user));
             });
+            stringRedisTemplate.expire(key, USERDATA_TTL, TimeUnit.MINUTES);
         }
         //在数据库中手机信息，挂载到redis上
         Long size = stringRedisTemplate.opsForList().size(key);
@@ -379,26 +389,102 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users>
         Boolean exist = stringRedisTemplate.hasKey(key);
         //若没有，则从数据库中寻找
         if(!exist){
-            LambdaQueryWrapper<Users> select = new QueryWrapper<Users>().lambda()
-                    //不查询password字段
-                    // 不查询updateTime字段
-                    .select(Users.class,
-                            i ->{
-                                return  !i.getProperty().equals("password")
-                                        &&!i.getProperty().equals("updatetime")
-                                        ;
-                            });
-            List<Users> list = list(select);
-            if(list==null||list.isEmpty()){
-                return Result.fail();
-            }
-            list.forEach(user->{
-                stringRedisTemplate.opsForList().rightPush(key, JSONUtil.toJsonStr(user));
-            });
+            return Result.fail();
         }
         //在数据库中手机信息，挂载到redis上
         Long size = stringRedisTemplate.opsForList().size(key);
         return Result.ok(size);
+    }
+
+    @Override
+    public Result<?> banUser(BanReason banReason) {
+        Users user = UserHolder.getUser();
+        if(user==null){
+            return Result.fail();
+        }
+        Integer id = banReason.getId();
+        if(user.getId().equals(id)){
+            return Result.fail("不能自己禁用自己");
+        }
+        String description = banReason.getDescription();
+        if(description==null||description.length()<=0){
+            return Result.fail("原因不能为空");
+        }
+        Reason reason=new Reason();
+        reason.setUid(banReason.getId());
+        reason.setDescription(banReason.getDescription());
+        reason.setType(banReason.getType());
+        reason.setCreatetime(new Date());
+        reason.setUpdatetime(new Date());
+        ILock lock=new SimpleRedisLock("reason:"+reason.getUid(),stringRedisTemplate);
+        boolean isLock = lock.tryLock(60);
+        if(!isLock){
+            return Result.fail();
+        }
+        try {
+            UsersService usersService = (UsersService) AopContext.currentProxy();
+            usersService.writeReason(reason);
+        }catch (Exception e){
+
+        }finally {
+            lock.unlock();
+        }
+
+        return Result.ok();
+    }
+
+    /**
+     * 专用于处理用户禁用原因的内部类
+     */
+    private class wirteHandler implements Runnable{
+        @Override
+        public void run() {
+            while (true){
+               try {
+                   //从队列中获取信息
+                   Reason reason = reasonsTasks.take();
+                   writeReason(reason);
+               }catch (Exception e){
+                   log.error("写入异常");
+               }
+            }
+        }
+    }
+    @Transactional(rollbackFor = {Exception.class})
+    public void writeReason(Reason reason){
+        if(reason==null){
+            return ;
+        }
+        if(reason.getUid()==null){
+            return ;
+        }
+        int insert = reasonMapper.insert(reason);
+        Integer uid = reason.getUid();
+        Users user = getOne(new QueryWrapper<Users>().eq("id", uid));
+        if(user==null){
+            return ;
+        }
+        user.setStatus(2);
+
+        if(insert<=0){
+            return ;
+        }
+        saveOrUpdate(user);
+        Map<String, Object> stringObjectMap = BeanUtil.beanToMap(user, new HashMap<>(),
+                CopyOptions.create()
+                        .setIgnoreNullValue(true)
+                        .setIgnoreError(true)
+                        .setFieldValueEditor((fieldName, fieldValue) -> {
+                                    if(fieldValue==null){
+                                        return null;
+                                    }
+                                    return fieldValue.toString() ;
+                                }
+                        ));
+        String key=LOGIN_USER_KEY+user.getId();
+        stringRedisTemplate.opsForHash().putAll(key,stringObjectMap);
+        stringRedisTemplate.expire(key, LOGIN_USER_TTL, TimeUnit.MINUTES);
+        return ;
     }
 }
 

@@ -87,7 +87,6 @@ public class PetUtil {
             setPetConfig(petNew,petsconfig);
             //设置宠物的天赋值
             setPetTalent(petNew,pet);
-            //TODO 初始化pet的数值
             //根据配置初始化技能
             getSkill(petNew,pet);
             //初始化属性
@@ -125,6 +124,7 @@ public class PetUtil {
         pet.setUid(petstore.getUid());
         pet.setPid(petstore.getPid());
         pet.setOrder(petstore.getPerformed());
+        pet.setExperience(petstore.getExperience());
     }
     public void setPetConfig(Pet pet, Petsconfig petsconfig){
         pet.setAttribute(petsconfig.getAttribute());

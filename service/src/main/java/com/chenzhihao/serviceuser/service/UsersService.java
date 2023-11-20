@@ -3,9 +3,11 @@ package com.chenzhihao.serviceuser.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import com.chenzhihao.serviceuser.dto.BanReason;
 import com.chenzhihao.serviceuser.dto.LoginDto;
 import com.chenzhihao.serviceuser.dto.RegisterDto;
 import com.chenzhihao.serviceuser.dto.UserDataDto;
+import com.chenzhihao.serviceuser.model.Reason;
 import com.chenzhihao.serviceuser.model.Users;
 import com.chenzhihao.serviceuser.result.Result;
 import org.springframework.stereotype.Service;
@@ -38,4 +40,8 @@ public Result forgetPassword();
     Result<?> getUserInfo(Integer pageId);
 
     Result<?> getUserCount();
+
+    Result<?> banUser(BanReason banReason);
+
+    void writeReason(Reason reason);
 }

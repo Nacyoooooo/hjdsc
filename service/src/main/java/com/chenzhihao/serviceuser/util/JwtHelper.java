@@ -53,6 +53,12 @@ public class JwtHelper {
     public static void removeToken(String token) {
         //jwttoken无需删除，客户端扔掉即可。
     }
-
+    public static boolean isTokenExpired(String token) throws SignatureException {
+        Claims claims = Jwts.parser()
+                .setSigningKey(tokenSignKey)
+                .parseClaimsJws(token)
+                .getBody();
+        return claims.getExpiration().before(new Date());
+    }
 
 }

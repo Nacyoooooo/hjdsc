@@ -65,9 +65,11 @@ const setFirst=(id)=>{
     <el-table-column prop="pid" label="宠物编号" width="180" />
     <el-table-column prop="order" label="出战顺序" width="180" />
     <el-table-column prop="maxBlood" label="最大血量" width="180" />
+    <el-table-column prop="experience" label="升至下一级经验" width="180" />
     <el-table-column prop="createtime" label="createtime" >
       <template #default="scope">
         <el-button @click="setFirst(scope.row.id)">置于第一</el-button>
+        <el-button @click="setFirst(scope.row.id)">升级</el-button>
       </template>
     </el-table-column>
   </el-table>

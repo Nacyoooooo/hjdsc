@@ -98,6 +98,28 @@ public class Petstore implements Serializable {
      * 等级
      */
     private Integer level;
+    private Integer experience;
+    public void init(){
+        this.level=10;
+        this.healthpoint=1;
+        this.performed=0;
+        this.skillone=1;
+        this.physicaldamagepoint=1;
+        this.physicaldefence=1;
+        this.magicaldamagepoin=1;
+        this.magicaldefence=1;
+        this.speed=1;
+        this.createtime=new Date();
+        this.updatetime=new Date();
+    }
+
+    public Integer getExperience() {
+        return experience;
+    }
+
+    public void setExperience(Integer experience) {
+        this.experience = experience;
+    }
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
