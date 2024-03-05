@@ -14,4 +14,6 @@ import org.springframework.stereotype.Service;
 public interface MainpetService extends IService<Mainpet> {
 
     Result<?> getMainPets(Integer pid);
+
+    void updateMainpet(Mainpet l);
 }

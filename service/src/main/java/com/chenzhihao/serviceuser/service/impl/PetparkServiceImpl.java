@@ -47,6 +47,7 @@ import static com.chenzhihao.serviceuser.constant.RedisConstants.PLAY_SKILL_KEY;
 @EnableTransactionManagement
 public class PetparkServiceImpl extends ServiceImpl<PetparkMapper, Petpark>
         implements PetparkService {
+
     @Autowired
     private PetsconfigMapper petsconfigMapper;
     @Autowired
@@ -214,7 +215,6 @@ public class PetparkServiceImpl extends ServiceImpl<PetparkMapper, Petpark>
         if(!success){
             return Result.fail();
         }
-
         Capturerecord capturerecord = new Capturerecord();
         capturerecord.setCid(parkid.intValue());
         capturerecord.setPid(parkid.intValue());
@@ -308,7 +308,3 @@ public class PetparkServiceImpl extends ServiceImpl<PetparkMapper, Petpark>
         return Result.ok(Skills);
     }
 }
-
-
-
-

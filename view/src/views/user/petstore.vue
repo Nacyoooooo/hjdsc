@@ -9,10 +9,12 @@ const petConfig=reactive({
   config:[],
   store:[]
 })
+const money=ref(0)
 const  store =useUserInfoStore()
 onMounted(async ()=>{
   getPetConfig()
   getPetStoreConfig()
+  getCount()
   setInterval(()=>{
   },500)
 })
@@ -49,6 +51,37 @@ const getMainPet=async (id)=>{
   }).then(res=>{
     console.log(res)
     if(res.data.code==200){
+      ElMessage.success("领取成功")
+    }else {
+      ElMessage.error(res.data.msg)
+    }
+  })
+}
+const getCount=async ()=>{
+  await  axios.post('/api/user/getCount',{},{
+    headers:{
+      "authorization":store.getToken()
+    }
+  }).then(res=>{
+    console.log(res)
+    if(res.data.code==200){
+      money.value=res.data.data.count
+    }else {
+
+    }
+  })
+}
+const levelup=async (id)=>{
+  console.log(id)
+  await  axios.post('/api/pets/levelup/'+id,{},{
+    headers:{
+      "authorization":store.getToken()
+    }
+  }).then(res=>{
+    console.log(res)
+    if(res.data.code==200){
+      money.value=res.data.data.count
+    }else {
 
     }
   })
@@ -60,6 +93,8 @@ const setFirst=(id)=>{
 
 <template>
 <h>这是宠物背包</h>
+  <div>金币转经验 1:1</div>
+  <div>剩余金币:{{money}}</div>
   <el-table :data="petConfig.data" border style="width: 100%">
     <el-table-column prop="level" label="level" width="180" />
     <el-table-column prop="pid" label="宠物编号" width="180" />
@@ -69,7 +104,7 @@ const setFirst=(id)=>{
     <el-table-column prop="createtime" label="createtime" >
       <template #default="scope">
         <el-button @click="setFirst(scope.row.id)">置于第一</el-button>
-        <el-button @click="setFirst(scope.row.id)">升级</el-button>
+        <el-button @click="levelup(scope.row.id)">升级</el-button>
       </template>
     </el-table-column>
   </el-table>

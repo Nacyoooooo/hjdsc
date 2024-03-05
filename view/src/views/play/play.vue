@@ -53,6 +53,11 @@ const useSkill=async(number)=>{
     console.log(res)
     if(res.data.code==300){
       ElMessage.success(res.data.msg)
+      ElMessage.success(res.data.msg)
+      ElMessage.success(res.data.msg)
+      ElMessage.success(res.data.msg)
+      ElMessage.success(res.data.msg)
+      router.push('/homePage')
     }
   })
 }
@@ -210,7 +215,7 @@ onMounted(async ()=>{
               <el-button type="success" @click="setChoose(1)">
                 对战
               </el-button>
-              <el-button type="danger" >
+              <el-button type="danger" @click="router.push('/homePage')">
                 逃跑
               </el-button>
             </el-button-group>

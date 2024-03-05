@@ -57,8 +57,19 @@ public class MainpetServiceImpl extends ServiceImpl<MainpetMapper, Mainpet>
 
                     }else {
                         list.forEach(l->{
-                            MainpetService o = (MainpetService) AopContext.currentProxy();
-                            o.updateMainpet(l);
+                            if(l.getStatus()!=null&&l.getStatus().equals(1)){
+                            Petstore petstore=new Petstore();
+                            petstore.setPid(l.getPid());
+                            petstore.setUid(l.getUid());
+                            petstore.setExperience(0);
+                            petstore.setLevel(10);
+                            petstore.init();
+                            int insert = petstoreMapper.insert(petstore);
+                            if(insert>0){
+                                l.setStatus(2);
+                                saveOrUpdate(l);
+                            }
+                        }
                         });
                     }
                 }finally {
@@ -70,19 +81,7 @@ public class MainpetServiceImpl extends ServiceImpl<MainpetMapper, Mainpet>
     }
     @Transactional(rollbackFor = {Exception.class})
     public void updateMainpet(Mainpet l){
-        if(l.getStatus()!=null&&l.getStatus().equals(1)){
-            Petstore petstore=new Petstore();
-            petstore.setPid(l.getPid());
-            petstore.setUid(l.getUid());
-            petstore.setExperience(0);
-            petstore.setLevel(10);
-            petstore.init();
-            int insert = petstoreMapper.insert(petstore);
-            if(insert>0){
-                l.setStatus(2);
-                boolean b = saveOrUpdate(l);
-            }
-        }
+
     }
     @Override
     public Result<?> getMainPets(Integer pid) {

@@ -8,12 +8,16 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import com.chenzhihao.serviceuser.mapper.PetstoreMapper;
+import com.chenzhihao.serviceuser.model.Money;
 import com.chenzhihao.serviceuser.model.Petstore;
 import com.chenzhihao.serviceuser.model.Users;
 import com.chenzhihao.serviceuser.model.entity.Pet;
 import com.chenzhihao.serviceuser.result.Result;
+import com.chenzhihao.serviceuser.service.MoneyService;
 import com.chenzhihao.serviceuser.service.PetstoreService;
+import com.chenzhihao.serviceuser.util.ILock;
 import com.chenzhihao.serviceuser.util.PetUtil;
+import com.chenzhihao.serviceuser.util.SimpleRedisLock;
 import com.chenzhihao.serviceuser.util.UserHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -23,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.chenzhihao.serviceuser.constant.RedisConstants.PETS_BAG_KEY;
+import static com.chenzhihao.serviceuser.constant.RedisConstants.USER_MONEY_KEY;
 
 
 /**
@@ -39,6 +44,8 @@ public class PetstoreServiceImpl extends ServiceImpl<PetstoreMapper, Petstore>
     private PetstoreMapper petstoreMapper;
     @Autowired
     private PetUtil petUtil;
+    @Autowired
+    private MoneyService moneyService;
 
 
     @Override
@@ -157,42 +164,19 @@ public class PetstoreServiceImpl extends ServiceImpl<PetstoreMapper, Petstore>
             return Result.fail();
         }
         Integer uid = user.getId();
-        String key="pets:bag:"+uid;
+        String key=PETS_BAG_KEY+uid;
         Boolean existKey = stringRedisTemplate.hasKey(key);
+        if(!existKey){
+            List<Petstore> list = list(new QueryWrapper<Petstore>()
+                    .eq("uid", user.getId())
+                    .ne("performed", 0));
+        }
+        List<String> list = stringRedisTemplate.opsForList().range(key, 0, -1);
+        if(list==null||list.isEmpty()){
+            return Result.fail();
+        }
         //如果存在,则直接更改顺序
-        if(existKey){
-            String current = stringRedisTemplate.opsForList().index(key, currentPet-1);
-            stringRedisTemplate.opsForList().remove(key,0,current);
-            stringRedisTemplate.opsForList().leftPush(key,current);
-            List<String> list = stringRedisTemplate.opsForList().range(key, 0, -1);
-            if(null==list||list.size()<=0||list.size()>6){
-                return Result.fail();
-            }
-            return Result.ok(list);
-        }
-        //如果不存在，则直接查询数据库
-        else {
-            QueryWrapper<Petstore> q = new QueryWrapper<Petstore>()
-                    .eq("uid", uid)
-                    .ne("performed", 0);
-            List<Petstore> pets = list(q);
-            pets.forEach(pet->{
-                if (pet.getPerformed().equals(currentPet)){
-                    pet.setPerformed(1);
-                } else if (pet.getPerformed().equals(0)) {
-                    pet.setPerformed(currentPet.intValue());
-                }
-            });
-            boolean b = saveOrUpdateBatch(pets);
-            if(!b){
-                return Result.fail("修改失败");
-            }
-            Boolean delete = stringRedisTemplate.delete(key);
-            pets.forEach(petstore -> {
-                stringRedisTemplate.opsForList().rightPush(key,JSONUtil.toJsonStr(petstore));
-            });
-            return Result.ok(pets);
-        }
+        return Result.ok();
     }
 
     @Override
@@ -213,6 +197,70 @@ public class PetstoreServiceImpl extends ServiceImpl<PetstoreMapper, Petstore>
             return Result.fail();
         }
         return Result.ok(list);
+    }
+
+    @Override
+    public Result<?> levelup(Integer pid) {
+        //从redis中找自己的宠物
+        Users user = UserHolder.getUser();
+        if(user==null){
+            return Result.fail();
+        }
+        //没有要挂载
+        String key=PETS_BAG_KEY+user.getId();
+        Boolean exist = stringRedisTemplate.hasKey(key);
+        if(!exist){
+            petUtil.getPets(user.getId());
+        }
+        List<String> list = stringRedisTemplate.opsForList().range(key, 0, -1);
+        Result result=Result.ok();
+        list.forEach(l->{
+            Pet bean = JSONUtil.toBean(l, Pet.class);
+            if(bean.getId()==pid){
+                //查看等级，等级高于100则不可升级
+                Integer level = bean.getLevel();
+                if(level>=100){
+                    return;
+                }
+                String moneykey=USER_MONEY_KEY+user.getId();
+                Boolean moneyExist = stringRedisTemplate.hasKey(moneykey);
+                if(!moneyExist){
+                    moneyService.getCount();
+                }
+                String s = stringRedisTemplate.opsForValue().get(moneykey);
+                Money money = JSONUtil.toBean(s, Money.class);
+                //计算所需要消耗的金币
+                //每次升级需要100
+                if(money.getCount()>=100){
+                    Integer count = money.getCount();
+                    count-=100;
+                    ILock iLock=new SimpleRedisLock("lock:levelup:"+user.getId(),stringRedisTemplate);
+                    boolean isLock = iLock.tryLock(1);
+                    if(!isLock){
+                        return;
+                    }
+                    try{
+                        moneyService.update()
+                                .setSql("count=count-100")
+                                .eq("uid",user.getId());
+                        stringRedisTemplate.opsForValue().set(moneykey,money.toString());
+                        Petstore petstore = petstoreMapper.selectOne(new QueryWrapper<Petstore>().eq("id", bean.getId()));
+                        if(petstore==null){
+                            return;
+                        }
+                        level++;
+                        petstore.setLevel(level);
+                        petstoreMapper.updateById(petstore);
+                        petUtil.getPets(user.getId());
+                        result.setMsg("升级成功");
+                    }finally {
+                        iLock.unlock();
+                    }
+                }
+            }
+        });
+
+        return result;
     }
 }
 

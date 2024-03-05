@@ -50,5 +50,5 @@ public class Pet {
     //宠物的出战顺序
     private Integer order;
     private Integer experience;
-
+    private Integer id;
 }

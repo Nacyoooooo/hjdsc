@@ -81,4 +81,9 @@ public class PetsController {
     public Result<?> getMainPets(@PathVariable Integer pid){
         return mainpetService.getMainPets(pid);
     }
+    @PostMapping("/levelup/{pid}")
+    @ResponseBody
+    public Result<?> levelup(@PathVariable Integer pid){
+        return petstoreService.levelup(pid);
+    }
 }

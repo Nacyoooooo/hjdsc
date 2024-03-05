@@ -246,6 +246,8 @@ public class PlayServiceImpl implements PlayService {
         if(fightArea.getWinnerId()!=-1){
             Result<Object> fail = Result.fail("游戏已结束！");
             fail.setCode(300);
+            stringRedisTemplate.delete(PLAY_STATUS_KEY+fightArea.getPlayerOneId());
+            stringRedisTemplate.delete(PLAY_STATUS_KEY+fightArea.getPlayerTwoId());
             return fail;
         }
         Integer enemyId;
@@ -276,7 +278,7 @@ public class PlayServiceImpl implements PlayService {
         if(orderId==null){
             return Result.fail();
         }
-        Pet pet = pets.get(orderId);
+        Pet pet = pets.get(orderId.intValue());
         if(pet==null){
             return Result.fail();
         }

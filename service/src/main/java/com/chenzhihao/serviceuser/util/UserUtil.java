@@ -9,6 +9,7 @@ import com.chenzhihao.serviceuser.dto.RegisterDto;
 import com.chenzhihao.serviceuser.model.Users;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,6 +33,9 @@ public class UserUtil {
         users.setPassword(MD5.encrypt(user.getPassword()));
         users.setPhonenumber(user.getPhoneNumber());
         users.setStatus(UserCode.NORMAL);
+        users.setCreatetime(new Date());
+        users.setUpdatetime(new Date());
+        users.setAuthority(2);
         users.setGender(user.getGender());
         return users;
     }

@@ -80,6 +80,9 @@ public class UsersServiceImpl extends ServiceImpl<UsersMapper, Users>
         if(!one.getAuthority().equals(user.getAuthority())){
             return Result.fail();
         }
+        if(one.getStatus().equals(2)){
+            return Result.fail();
+        }
         //如果存在，则开始校验密码
         // 密码校验成功，则返回登录成功信息和token
         if(MD5.encrypt(user.getPassword()).equals(one.getPassword())){

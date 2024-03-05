@@ -21,4 +21,6 @@ public interface PetstoreService extends IService<Petstore> {
     Result<?> setBagFirst(Long currentPet);
 
     Result<?> getUserPets();
+
+    Result<?> levelup(Integer pid);
 }

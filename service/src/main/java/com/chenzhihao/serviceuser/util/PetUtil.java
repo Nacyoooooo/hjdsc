@@ -20,9 +20,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static com.chenzhihao.serviceuser.constant.PowerType.MAGIC;
 import static com.chenzhihao.serviceuser.constant.PowerType.PHYSICAL;
@@ -41,6 +43,19 @@ public class PetUtil {
     private PetstoreMapper petstoreMapper;
     @Autowired
     private SkillsMapper skillsMapper;
+    public void getPets(Integer uid){
+        String partern=PETS_BAG_KEY+uid;
+        stringRedisTemplate.delete(partern);
+        List<Petstore> petstores = petstoreMapper.selectList(new QueryWrapper<Petstore>()
+                .eq("id", uid)
+                .ne("performed", 0));
+        List<Pet>pets=new ArrayList<>();
+        getPet(pets,petstores);
+        String key=PETS_BAG_KEY+uid;
+        pets.forEach(pet -> {
+            stringRedisTemplate.opsForList().rightPush(key,JSONUtil.toJsonStr(pet));
+        });
+    }
 
     public void getPet(List<Pet> pets,List<Petstore> myPets){
         if(null==myPets||myPets.size()<=0){
@@ -74,6 +89,7 @@ public class PetUtil {
                                         }
                                 ));
                 stringRedisTemplate.opsForHash().putAll(pkey,configMap);
+                stringRedisTemplate.expire(pkey,1, TimeUnit.MINUTES);
             }
             //如果已经挂载，则从redis中读取数据
             Map<Object, Object> configMaps = stringRedisTemplate.opsForHash().entries(pkey);
@@ -81,6 +97,7 @@ public class PetUtil {
             if(petsconfig==null){
                 return;
             }
+            stringRedisTemplate.expire(pkey,1, TimeUnit.MINUTES);
             //创建对象
             Pet petNew=new Pet();
             //设置配置
@@ -125,6 +142,7 @@ public class PetUtil {
         pet.setPid(petstore.getPid());
         pet.setOrder(petstore.getPerformed());
         pet.setExperience(petstore.getExperience());
+        pet.setId(petstore.getId());
     }
     public void setPetConfig(Pet pet, Petsconfig petsconfig){
         pet.setAttribute(petsconfig.getAttribute());
